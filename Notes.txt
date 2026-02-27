@@ -1,0 +1,9 @@
+2/27/2026-
+
+It's my first journal entry in this particular folder. It's going to be needed.
+
+Tonight we got everything that we've gotten do so far actually running properly, up until
+actually writing to the .nex file, which is where I'll pick back up as I'm quite sleepy.
+
+I'm thinking that I should have openNexFile(); return the collected input back to append and have append write to the actual file. We should probably consider moving the input collection
+out of openNexFile, as well.
