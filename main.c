@@ -1,39 +1,54 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+
+typedef struct {
+    char memoryKey[200];
+    int assocationCount;
+    char associations[2000];
+    } InputForm;
+
 void create(const char *path) {
     FILE *fp = fopen(path, "a");
     if (fp != NULL)
         fclose(fp);
 }
-void openNexFile(FILE *fp) {
-    char memoryKey[200];
-    int assocationCount;
-    char associations[2000];
+
+void openNexFile(FILE *fp, InputForm *form) {
+
+
 
     printf("Memory Key: \n");
-    scanf("%199s", memoryKey);
+    scanf("%199s", form->memoryKey);
+    fprintf(fp, "%s\n", form->memoryKey);
     printf("Assocation Count: \n");
-    scanf("%d", &assocationCount);
-    for (int i = 0; i < assocationCount; i++ )
+    scanf("%d", &form->assocationCount);
+    for (int i = 0; i < form->assocationCount; i++ )
     {
         printf("Assocation: \n");
-        scanf("%1999s", associations);
+        scanf("%1999s", form->associations);
+        fprintf(fp, "%s\n", form->associations);
     }
+
+
 }
-void append(const char *path,int input) {
+
+void append(const char *path) {
+
     FILE *fp = fopen(path, "a");
+    printf("Appending to: %s\n", path);
     if (fp == NULL)
         return;
-    openNexFile(fp);
+    InputForm form = {0};
+    openNexFile(fp, &form);
     fclose(fp);
+
+
 }
 
-
-
-void runner(const char *path, int input) {
+void runner(const char *path) {
     create(path);
-    append(path, input);
+    append(path);
 
 }
 
@@ -41,10 +56,8 @@ int main() {
 
     bool inputBool = false;
     char entry[30];
-    int input;
-    printf("Type an int: \n");
-    scanf("%d", &input);
-    runner("Testing.nex", input);
+
+    runner("Testing2.nex");
 
 
     return 0;

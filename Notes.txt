@@ -5,5 +5,16 @@ It's my first journal entry in this particular folder. It's going to be needed.
 Tonight we got everything that we've gotten do so far actually running properly, up until
 actually writing to the .nex file, which is where I'll pick back up as I'm quite sleepy.
 
-I'm thinking that I should have openNexFile(); return the collected input back to append and have append write to the actual file. We should probably consider moving the input collection
+I'm thinking that I should have openNexFile(); return the collected input back to append and have append write to the actual file.
+We should probably consider moving the input collection
 out of openNexFile, as well.
+
+
+2/28/2026-
+
+After some frustration caused not by my code but by CLion itself, I got
+input written to the file! It gets collected and then put into a struct and
+then printed to the file from the struct.
+
+I think next I should still considering moving the input collection from
+within openNexFile, but that can be the next mission.
