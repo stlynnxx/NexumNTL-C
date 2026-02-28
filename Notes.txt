@@ -1,4 +1,4 @@
-2/27/2026-
+2/26/2026-
 
 It's my first journal entry in this particular folder. It's going to be needed.
 
@@ -10,7 +10,7 @@ We should probably consider moving the input collection
 out of openNexFile, as well.
 
 
-2/28/2026-
+2/27/2026-
 
 After some frustration caused not by my code but by CLion itself, I got
 input written to the file! It gets collected and then put into a struct and
@@ -18,3 +18,11 @@ then printed to the file from the struct.
 
 I think next I should still considering moving the input collection from
 within openNexFile, but that can be the next mission.
+
+I came back and did a bit more work and now I have the program properly printing
+data to the file. I got the individual associations printed properly albiet I had to
+make a small comprise on the delimiter in that I had planned to use a comma to show distinction
+between associations within the braces but I found it much easier to switch it to using a space as a
+delimiter.
+
+Maybe I'll do some more work tonight, maybe I won't. Maybe I'll work on something else for a bit.
