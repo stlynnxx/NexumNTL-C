@@ -13,28 +13,35 @@ void create(const char *path) {
     if (fp != NULL)
         fclose(fp);
 }
-
+void format(FILE *fp, InputForm *form) {
+     fprintf(fp,"%s", "{");
+     fprintf(fp, "%s", "'");
+     fprintf(fp,"%s", form->memoryKey);
+     fprintf(fp, "%s", "'");
+     fprintf(fp,"%s", ":");
+     fprintf(fp,"%s", "{'");
+     fprintf(fp, "%s", form->associations);
+     fprintf(fp, "%s", "'}");
+     fprintf(fp, "%s", "}");
+}
 void openNexFile(FILE *fp, InputForm *form) {
-
-
-
     printf("Memory Key: \n");
     scanf("%199s", form->memoryKey);
-    fprintf(fp, "%s\n", form->memoryKey);
+    // fprintf will eventually be replaced with a format function
+
+
     printf("Assocation Count: \n");
     scanf("%d", &form->assocationCount);
     for (int i = 0; i < form->assocationCount; i++ )
     {
         printf("Assocation: \n");
         scanf("%1999s", form->associations);
-        fprintf(fp, "%s\n", form->associations);
+        // fprintf(fp, "%s\n", form->associations);
     }
-
-
+    format(fp, form);
 }
 
 void append(const char *path) {
-
     FILE *fp = fopen(path, "a");
     printf("Appending to: %s\n", path);
     if (fp == NULL)
@@ -42,23 +49,16 @@ void append(const char *path) {
     InputForm form = {0};
     openNexFile(fp, &form);
     fclose(fp);
-
-
 }
 
 void runner(const char *path) {
     create(path);
     append(path);
-
 }
 
 int main() {
-
     bool inputBool = false;
     char entry[30];
-
     runner("Testing2.nex");
-
-
     return 0;
 }
