@@ -26,3 +26,26 @@ between associations within the braces but I found it much easier to switch it t
 delimiter.
 
 Maybe I'll do some more work tonight, maybe I won't. Maybe I'll work on something else for a bit.
+
+2/28/2026-
+
+I didn't notice last night but I'm encountering some bugginess when writing multiple associations in that
+I don't have any logic for handling multi word single associations yet and so if a given association is a
+two words with a space between that actually gets treated as one association per word and throws the loop off.
+
+An immediate fix is to change how I'm giving input and use an underscore in place of a blank space but I'm
+not planning to just call that the answer.
+
+I'm thinking getline may be a way forward with the input issue but I need to do some more reading first.
+
+I noticed that the bug was really only in the input collection and that it was formatting the data in the file
+correctly regardless so I simply moved the printf statement outside of the loop and have the assocations all
+entered on one line. Obviously this has issues but i'm still figuring things out, anyway.
+
+This is my first real C project so some patience will need to be had.
+
+We do seem to be appending some random stuff the file now, so. Again, patience.
+
+A leftover fprintf line in openNexFile was causing the issues!
+
+We added some comments and got rid of some unnecessary code, as well.

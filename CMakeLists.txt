@@ -3,4 +3,7 @@ project(NexumNTL C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(NexumNTL main.c)
+add_executable(NexumNTL main.c
+        Lexer.c
+        Lexer.h
+        main.h)
