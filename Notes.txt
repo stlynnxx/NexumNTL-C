@@ -49,3 +49,16 @@ We do seem to be appending some random stuff the file now, so. Again, patience.
 A leftover fprintf line in openNexFile was causing the issues!
 
 We added some comments and got rid of some unnecessary code, as well.
+
+3/2/2026-
+
+I did a bit of work tonight; I'm kind of regretting not pausing to journal
+a bit here and there as I went but it is what it is.
+
+I set up a multidimensional array that's holding delimiters at the moment
+and will hold more tokens as time goes by. I wrote out logic for opening the
+.nex file created in storage by the source emitter and loading the file
+contents into memory and now I'm at the stage where I start checking them
+against organizational tokens, methinks.
+
+I'll probably be done for tonight so I can get to sleep before too long.
