@@ -38,8 +38,8 @@ Memory Keys can be used as Associations and "nest" any Associations they carry
 within the Memory Key they are being referenced in. This is marked by placing
 an Associator ("@") in front of the Memory Key being used as an Association.
 
-{MemoryKeyOne: {"Association One"}}
-{MemoryKeyTwo: {"Associtaion One", @MemoryKeyOne}}
+{MemoryKeyOne: {"Association One"}};<br>
+{MemoryKeyTwo: {"Associtaion One", @MemoryKeyOne}};
 
 In the above example MemoryKeyOne and MemoryKeyTwo both have an Association One
 that is exclusive to the respective Memory Key, however, since we nest the MemoryKeyOne
