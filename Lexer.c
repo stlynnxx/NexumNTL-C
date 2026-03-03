@@ -10,7 +10,10 @@
 #define MAX_ASSOC_LEN 200
 #define ROW 20
 #define COLUMN 20
-
+#define STARTLINETOKEN "{"
+#define STARTITEMTOKEN "'"
+#define ENDLINETOKEN "}"
+#define ASSOCIATOR "@"
 typedef struct {
     char mainArray[2000];
     char splitArray[MAX_ASSOC][MAX_ASSOC_LEN];
@@ -50,49 +53,90 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
 void split(FILE *fp) {
     MemoryFileSplit memoryFileSplit;
     loadNexFile(fp, &memoryFileSplit);
-    char pull[4] = {memoryFileSplit.mainArray[0], memoryFileSplit.mainArray[1]};
-    switch (pull[0]) {
-        case checkTokens[0]:
-            printf("startItemToken");
-            break;
-        case checkTokens[1]:
-            printf("endItemToken");
-            break;
-        case checkTokens[2]:
-            printf("associator");
-            break;
-        case checkTokens[3]:
-            printf("endlineToken");
-            break;
-        default:
-            printf("unknownToken");
-            break;
+    int length = sizeof(memoryFileSplit.mainArray) / sizeof(memoryFileSplit.mainArray[0]);
+    for (int i = 0; i < length; i++) {
+        if (i == checkTokens[0]) {
+
+
+        }
     }
+
+    /* What I'm trying to do here essentially is go through what's loaded into the array
+    char by char and take different actions based on what it is.
+    I just don't quite know how i'm going to do this yet.
+
+    So.
+
+    If workingChar == startBraceToken - Append to working memory, append to
+    previousChars[], read Next Char
+    if workingChar == nameToken && previousChar == startBraceToken
+    {
+        Append to working Memory
+        (So working memory at this point will hold startBraceToken, nameToken)
+        Update previousChars[]
+    }
+    if previousChar == startNameToken && workingMemory[0] == startBraceToken
+    {
+        Read chars and APPEND to previousChars[]
+        until workingChar == nameToken
+        if workingChars[2] AFTER second nameToken == ": " {
+        chars between nameTokens = MemoryKey}
+        advance working char
+    }
+    if workingChar == startBraceToken {
+            Append to previousChar and advance workingChar
+            if workingChar == nameToken
+            {
+                Advance workingChar
+                if workingChar == Associator
+                associatorBool = True
+                Read chars and APPEND to previousChars[]
+                until working char == nameToken
+                if workingChar AFTER second nameToken == "," OR "}"
+                {
+                    chars between nameTokens = Association
+                    if working char AFTER second nameToken == "," {
+                    Repeat Associator
+                    Process to this point
+                    }
+                    if working char AFTER second nameToken == endBraceToken
+                    {
+                        Advance working char +1
+                        if working char +1 == endLineToken
+                        {
+                            Go to next line
+                        }
+                    }
+
+                }
+                if new line char[1] == startBraceToken
+                {
+                Repeat Process
+                }
+                if new line char[1] == endFileToken
+                {
+                    End Lexing
+                }
+            }
+        }
+
+        There's a rough pseudo outline of the Lexing Process.
+    */
+
 
 
 }
 
 // The open function will serve to open the file and append
 // to memory.
-void open() {
-    FILE *fp = fopen("Testing2.nex", "a");
-    if (fp == NULL) {
-        printf("Unable to open existing .nex file, creating"
-                        "new file instance.\n");
-        fopen("Testing2.nex", "w");
-        if (fp != NULL) {
-            printf("Successfully created new .nex file.\n");
-        }
-    }
+void catalyst() {
+    FILE *fp = fopen("Testing2.nex", "r");
     split(fp);
+    fclose(fp);
 }
 
 
 int lexMain() {
-    char splits[2000];
-    open();
-
-
-
+    catalyst();
     return 0;
 };

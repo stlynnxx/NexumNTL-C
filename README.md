@@ -17,9 +17,9 @@ It also plays a role in agentic memory, allowing
 for rapid, tokenized importing and exporting of memories
 via .nex files. 
 
-The basic schema-
+# The basic schema
 
-MemoryKey : Association
+<i>MemoryKey : Association</i>
 
 This is the crux of the language. Anything defined to the 
 left of the colon is a Memory Key, and anything defined to

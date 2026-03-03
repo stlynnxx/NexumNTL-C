@@ -62,3 +62,12 @@ contents into memory and now I'm at the stage where I start checking them
 against organizational tokens, methinks.
 
 I'll probably be done for tonight so I can get to sleep before too long.
+
+3/3/2026-
+
+Tonight I didn't do too heavy of lifting, just cleaning up some of the code that
+I wrote yesterday and doing some pseudo coding trying to figure out the
+lexing process.
+
+All of the pseudocode is in Lexer.c.
+
