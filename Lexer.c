@@ -3,6 +3,7 @@
 //
 
 #include "Lexer.h"
+#include "AST.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,18 +26,7 @@ typedef struct {
     char associations[MAX_ASSOC][MAX_ASSOC_LEN];
 } Breakdown;
 
-const char tokens[ROW][COLUMN] = {
-    {"{'", "(': )", "@", ";"},
-    {"c00"}
-};
 
-const char startItemToken = tokens[0][0];
-const char endItemToken = tokens[0][1];
-const char associator = tokens[0][2];
-const char endlineToken = tokens[0][3];
-const char checkTokens[20000] = {
-    startItemToken, endItemToken, endlineToken, associator,
-};
 
 
 
@@ -50,16 +40,43 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
 
 }
 
-void split(FILE *fp) {
-    MemoryFileSplit memoryFileSplit;
-    loadNexFile(fp, &memoryFileSplit);
-    int length = sizeof(memoryFileSplit.mainArray) / sizeof(memoryFileSplit.mainArray[0]);
-    for (int i = 0; i < length; i++) {
-        if (i == checkTokens[0]) {
 
+ void crawler(FILE *fp) {
+    MemoryFileSplit memoryFileSplit;
+    char workingChar[5];
+    char workingCheck[2];
+    char workingMemKeys[200];
+
+
+    loadNexFile(fp, &memoryFileSplit);
+    int len = sizeof(memoryFileSplit.mainArray) / sizeof(memoryFileSplit.mainArray[0]);
+    for (int i = 0; i < len; i++) {
+        workingChar[0] = memoryFileSplit.mainArray[i];
+        if (workingChar == openBraceToken) {
+            workingCheck[0] = workingChar[1];
+            if (workingCheck == nameToken) {
+                // This will need to advance workingChar until another nameToken is hit
+                // And then append everything between to workingMemKeys
+                workingCheck[0] = workingChar[2];
+                // this is the loop that will be doing the letter check.
+                // Alphas and alphas length are in AST.c
+                for (int i = 0; i < alphasLength; i++) {
+
+                }
+            }
 
         }
+
+
+
+
+
     }
+
+
+}
+
+
 
     /* What I'm trying to do here essentially is go through what's loaded into the array
     char by char and take different actions based on what it is.
@@ -130,13 +147,17 @@ void split(FILE *fp) {
 // The open function will serve to open the file and append
 // to memory.
 void catalyst() {
+
     FILE *fp = fopen("Testing2.nex", "r");
-    split(fp);
+    crawler(fp);
     fclose(fp);
 }
 
 
 int lexMain() {
+    printf("%s", openBraceToken);
+
+
     catalyst();
     return 0;
 };

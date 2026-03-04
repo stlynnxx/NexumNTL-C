@@ -71,3 +71,19 @@ lexing process.
 
 All of the pseudocode is in Lexer.c.
 
+I came back and set up a basic AST page as well.
+
+3/4/2026-
+
+Today I began the daunting task of turning yesterday's brainstorming into actual code. I didn't get very far
+yet by any measure, but, it's not a race, either.
+
+We started by replacing the split function with a crawler function. We got a few ifs in and now we need to brainstorm
+a bit more.
+
+I need to figure out how to 'advance' workingChar until it hits another name token. Really I think I have at
+least a basic idea here; we could have an array of letters (Knowing me I'll probably call it alphas or something),
+and if the current working char does appear in there, then we know it's a letter, and if it doesn't, then we identify what it is,
+which *should* be a nameToken unless there's a mistake in the input. Obviously checking for what it is after identifying what it
+isn't entails a bit more than just doing it, but, one step at a time.
+

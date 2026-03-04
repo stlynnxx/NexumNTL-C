@@ -1,8 +1,14 @@
-//
-// Created by steviexx on 3/3/26.
-//
+#ifndef AST_H
+#define AST_H
 
-#ifndef NEXUMNTL_AST_H
-#define NEXUMNTL_AST_H
+extern const char *startFileToken;
+extern const char *openBraceToken;
+extern const char *closeBraceToken;
+extern const char *nameToken;
+extern const char *associatorToken;
+extern const char *endLineToken;
+extern const char *endFileToken;
+extern const char alphas[];
+extern const int alphasLength;
 
-#endif //NEXUMNTL_AST_H
+#endif // AST_H
