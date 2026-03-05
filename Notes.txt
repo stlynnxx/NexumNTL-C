@@ -87,3 +87,9 @@ and if the current working char does appear in there, then we know it's a letter
 which *should* be a nameToken unless there's a mistake in the input. Obviously checking for what it is after identifying what it
 isn't entails a bit more than just doing it, but, one step at a time.
 
+
+We just did a bit more chicken pecking around on the lexing process tonight, just fleshing a bit more out,
+nothing being finished or perfect or even necessarily good by any means. It just is, and it is progress.
+
+Forward is forward, even if it's by baby steps.
+

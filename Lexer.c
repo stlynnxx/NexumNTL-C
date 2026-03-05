@@ -5,6 +5,7 @@
 #include "Lexer.h"
 #include "AST.h"
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #define MAX_ASSOC 50
@@ -46,6 +47,8 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
     char workingChar[5];
     char workingCheck[2];
     char workingMemKeys[200];
+    bool memoryKeyBool;
+    int letterCounter;
 
 
     loadNexFile(fp, &memoryFileSplit);
@@ -59,10 +62,36 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
                 // And then append everything between to workingMemKeys
                 workingCheck[0] = workingChar[2];
                 // this is the loop that will be doing the letter check.
-                // Alphas and alphas length are in AST.c
+                // Alphas and alphas length are in AST.h
                 for (int i = 0; i < alphasLength; i++) {
-
+                    if (workingCheck[i] == alphas[i]) {
+                        memoryKeyBool = true;
+                        letterCounter++;
+                    }
+                    else {
+                        memoryKeyBool = false;
+                    }
                 }
+                /* letterCounter gets us the length of the Memory Key.
+                 From here we can go from the point of one char after the initial
+                nametoken add letterCounter and that range will hold the memory key and we can append
+                it to a seperate array. */
+                workingCheck[0] = workingChar[2];
+                // Our memory key from here will be workingCheck + letterCounter
+                for (int j = 2; j < letterCounter; j++) {
+                    workingMemKeys[j] = workingChar[j];
+                }
+                // I'm not sure if workingChar is really what I want to append to yet but it's a work in progress
+            }
+        }
+        workingCheck[0] = workingChar[3];
+        if (workingCheck == openBraceToken)
+            {
+            workingCheck[0] = workingChar[4];
+            }
+            if (workingCheck == nameToken)
+            {
+                workingCheck[0] = workingChar[5];
             }
 
         }
