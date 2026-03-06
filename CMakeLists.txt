@@ -7,5 +7,5 @@ add_executable(NexumNTL main.c
         Lexer.c
         Lexer.h
         main.h
-        AST.c
-        AST.h)
+        SymbolTable.c
+        SymbolTable.h)

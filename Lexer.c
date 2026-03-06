@@ -3,7 +3,7 @@
 //
 
 #include "Lexer.h"
-#include "AST.h"
+#include "SymbolTable.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>

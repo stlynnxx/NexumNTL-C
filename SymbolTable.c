@@ -1,4 +1,4 @@
-#include "AST.h"
+#include "SymbolTable.h"
 
 const char *startFileToken   = "{    ";
 const char *openBraceToken   = "{";
