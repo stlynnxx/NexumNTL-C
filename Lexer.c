@@ -48,7 +48,8 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
     char workingCheck[2];
     char workingMemKeys[200];
     bool memoryKeyBool;
-    int letterCounter;
+    bool assocationBool;
+    int letterCounter = 0;
 
 
     loadNexFile(fp, &memoryFileSplit);
@@ -63,6 +64,8 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
                 workingCheck[0] = workingChar[2];
                 // this is the loop that will be doing the letter check.
                 // Alphas and alphas length are in AST.h
+                // This is also where we get the length of the memory key
+                // via letterCounter.
                 for (int i = 0; i < alphasLength; i++) {
                     if (workingCheck[i] == alphas[i]) {
                         memoryKeyBool = true;
@@ -78,23 +81,47 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
                 it to a seperate array. */
                 workingCheck[0] = workingChar[2];
                 // Our memory key from here will be workingCheck + letterCounter
-                for (int j = 2; j < letterCounter; j++) {
-                    workingMemKeys[j] = workingChar[j];
+                if (memoryKeyBool == true) {
+                    for (int j = 2; j < letterCounter; j++) {
+                        workingMemKeys[j] = workingChar[j];
+                    }
                 }
+                memoryKeyBool = false;
+
                 // I'm not sure if workingChar is really what I want to append to yet but it's a work in progress
             }
         }
-        workingCheck[0] = workingChar[3];
+        int startingPoint = letterCounter + 1;
+        workingCheck[0] = workingChar[startingPoint];
         if (workingCheck == openBraceToken)
-            {
-            workingCheck[0] = workingChar[4];
-            }
-            if (workingCheck == nameToken)
-            {
-                workingCheck[0] = workingChar[5];
-            }
+        {
+            startingPoint++;
+            workingCheck[0] = workingChar[startingPoint];
+        }
+        // This will be the association loop; we need to write it to be
+        // reusable as many times as necessary.
+        if (workingCheck == nameToken)
+        {
+            startingPoint++;
+            workingCheck[0] = workingChar[startingPoint];
+            int associationStartIdx = workingCheck[0];
+            for (int i = 0; i < alphasLength; i++) {
+                if (workingCheck[i] == alphas[i]) {
+                    letterCounter++;
+                    assocationBool = true;
+                }
+
+                else {
+                    assocationBool = false;
+                }
+            } // At this point letterCounter will be sitting at the END of the first associaton.
+             // associationStartIdx is the beginning of the association, therefore associationStartIdx
+            // through letterCounter is the association.
 
         }
+
+    }
+
 
 
 
