@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
+
+#include "Lexer.h"
 #define MAX_ASSOC 50
 #define MAX_ASSOC_LEN 200
 
@@ -71,5 +73,6 @@ int main() {
     // bool inputBool = false;
     char entry[30];
     runner("Testing2.nex");
+
     return 0;
 }

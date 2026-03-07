@@ -44,66 +44,107 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
 
  void crawler(FILE *fp) {
     MemoryFileSplit memoryFileSplit;
-    char workingChar[5];
+    char fileArray[5];
     char workingCheck[2];
+    char wC[50];
     char workingMemKeys[200];
     bool memoryKeyBool;
     bool assocationBool;
+    int tracker = 0;
+    int nameTokenPoint;
     int letterCounter = 0;
 
 
     loadNexFile(fp, &memoryFileSplit);
     int len = sizeof(memoryFileSplit.mainArray) / sizeof(memoryFileSplit.mainArray[0]);
-    for (int i = 0; i < len; i++) {
-        workingChar[0] = memoryFileSplit.mainArray[i];
-        if (workingChar == openBraceToken) {
-            workingCheck[0] = workingChar[1];
-            if (workingCheck == nameToken) {
+
+    for (int i = 0; i < sizeof(memoryFileSplit.mainArray); i++) {
+        /* Here the first char of memfilesplit.mainarray is loaded into workingChar[0]
+          letterCounter is also sitting at 0 */
+        fileArray[0] = memoryFileSplit.mainArray[i];
+        // Don't forget that fileArray is the entirety of the file at this moment
+        wC[0] = fileArray[0];
+        if (wC == openBraceToken) {
+            /* If we are thinking of wC as a 'selector' moving across the file
+            Char by Char then this next line advances the selector */
+            wC[0] = fileArray[1];
+            tracker++;
+            /* We won't exactly be needing tracker at this moment but it's still good to
+             * keep it updated */
+            if (wC == nameToken) {
                 // This will need to advance workingChar until another nameToken is hit
                 // And then append everything between to workingMemKeys
-                workingCheck[0] = workingChar[2];
+                wC[0] = fileArray[2];
+                tracker++;
+                nameTokenPoint = tracker;
                 // this is the loop that will be doing the letter check.
                 // Alphas and alphas length are in AST.h
                 // This is also where we get the length of the memory key
                 // via letterCounter.
                 for (int i = 0; i < alphasLength; i++) {
+                   // I'm not super convinced that this is exactly how I
+                    // want to handle letter checking for real as it seems
+                    // prone to unwanted results/unnecessary loops.
+
+                    // But also maybe I'm overthinking it
+
+                    if (wC[i] != alphas[i]) {
+                        memoryKeyBool = false;
+                    }
                     if (workingCheck[i] == alphas[i]) {
                         memoryKeyBool = true;
+                        workingMemKeys[i] = fileArray[i];
                         letterCounter++;
-                    }
-                    else {
-                        memoryKeyBool = false;
+                        tracker++;
                     }
                 }
                 /* letterCounter gets us the length of the Memory Key.
                  From here we can go from the point of one char after the initial
-                nametoken add letterCounter and that range will hold the memory key and we can append
-                it to a seperate array. */
-                workingCheck[0] = workingChar[2];
-                // Our memory key from here will be workingCheck + letterCounter
-                if (memoryKeyBool == true) {
-                    for (int j = 2; j < letterCounter; j++) {
-                        workingMemKeys[j] = workingChar[j];
-                    }
+                nametoken (namePointToken is that exact index)
+                and add letterCounter and that range will hold the memory key and we can append
+                it to a seperate array.
+                if nameTokenPoint = 5 and letterCounter = 6, then 5-11 is our MemoryKeyRange
+
+
+                */
+
+                // If we're thinking of tracker as a sort of mirror for the imagined selector of
+                // fileArray then this statement moves tracker onto the first char after the last letter of
+                // the memory key, which means it should return a name token.
+
+                tracker++;
+
+                wC[0] = fileArray[tracker];
+                if (wC == nameToken) {
+                    tracker++;
+                    wC[0] = fileArray[tracker];
                 }
-                memoryKeyBool = false;
+                if (wC == comma) {
+                    tracker++;
+                    tracker++;
+                    wC[0] = fileArray[tracker];
+                }                }
+                if (wC == nameToken) {
+                    //This is where we will begin associator logic. We need to keep
+                    // in mind that it needs to be repeatable.
+                }
 
                 // I'm not sure if workingChar is really what I want to append to yet but it's a work in progress
             }
         }
         int startingPoint = letterCounter + 1;
-        workingCheck[0] = workingChar[startingPoint];
+        workingCheck[0] = fileArray[startingPoint];
         if (workingCheck == openBraceToken)
         {
             startingPoint++;
-            workingCheck[0] = workingChar[startingPoint];
+            workingCheck[0] = fileArray[startingPoint];
         }
         // This will be the association loop; we need to write it to be
         // reusable as many times as necessary.
         if (workingCheck == nameToken)
         {
             startingPoint++;
-            workingCheck[0] = workingChar[startingPoint];
+            workingCheck[0] = fileArray[startingPoint];
             int associationStartIdx = workingCheck[0];
             for (int i = 0; i < alphasLength; i++) {
                 if (workingCheck[i] == alphas[i]) {
@@ -117,8 +158,18 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
             } // At this point letterCounter will be sitting at the END of the first associaton.
              // associationStartIdx is the beginning of the association, therefore associationStartIdx
             // through letterCounter is the association.
+            letterCounter++;
+            workingCheck[0] = fileArray[letterCounter];
+            if (workingCheck == nameToken) {
+                // Repeat Association Loop/Logic
+            }
+            if (workingCheck == endAssociationsToken) {
+                // End Associations Loop
+            }
+
 
         }
+// we will need a demlimiter to tell the association loop when to end
 
     }
 
@@ -130,7 +181,7 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
     }
 
 
-}
+
 
 
 
@@ -198,7 +249,7 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
 
 
 
-}
+
 
 // The open function will serve to open the file and append
 // to memory.

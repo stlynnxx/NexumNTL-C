@@ -101,3 +101,15 @@ for me to repeat those here, honestly.
 
 Hopefully I'll get to bed at a decent time and be able to put in some more work when i'm awake!
 
+3/7/2026-
+
+It's 3 AM so I am going to attempt to wind down and get to bed soon
+but we just spent some time tonight on going back over the in progress
+lexing process and trying to smooth it out a bit. We're up to the associator logic
+point and, although what I have before that point is yet to be perfect, it is better
+than it was yesterday, which is progress, and progress is good.
+
+I have some pretty detailed comments in the actual code that reflect more details about
+what's going on in there on a technical level. I just don't really feel like repeating them
+in here.
+
