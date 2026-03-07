@@ -40,9 +40,11 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
    split->mainArray[size] = '\0';
 
 }
+void associations(char wC[50]) {
 
+}
 
- void crawler(FILE *fp) {
+void crawler(FILE *fp) {
     MemoryFileSplit memoryFileSplit;
     char fileArray[5];
     char workingCheck[2];
@@ -82,12 +84,10 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
                 // This is also where we get the length of the memory key
                 // via letterCounter.
                 for (int i = 0; i < alphasLength; i++) {
-                   // I'm not super convinced that this is exactly how I
+                    // I'm not super convinced that this is exactly how I
                     // want to handle letter checking for real as it seems
                     // prone to unwanted results/unnecessary loops.
-
                     // But also maybe I'm overthinking it
-
                     if (wC[i] != alphas[i]) {
                         memoryKeyBool = false;
                     }
@@ -105,15 +105,11 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
                 it to a seperate array.
                 if nameTokenPoint = 5 and letterCounter = 6, then 5-11 is our MemoryKeyRange
 
-
                 */
-
                 // If we're thinking of tracker as a sort of mirror for the imagined selector of
                 // fileArray then this statement moves tracker onto the first char after the last letter of
                 // the memory key, which means it should return a name token.
-
                 tracker++;
-
                 wC[0] = fileArray[tracker];
                 if (wC == nameToken) {
                     tracker++;
@@ -123,62 +119,46 @@ void *loadNexFile(FILE *fp, MemoryFileSplit *split) {
                     tracker++;
                     tracker++;
                     wC[0] = fileArray[tracker];
-                }                }
-                if (wC == nameToken) {
-                    //This is where we will begin associator logic. We need to keep
-                    // in mind that it needs to be repeatable.
                 }
 
-                // I'm not sure if workingChar is really what I want to append to yet but it's a work in progress
+
+                // this is the start of the association loop. I've already started
+                // a function to move all of this into but I'm feeling it out here first
+                // and then moving it all to the function
+
+
+            if (wC == nameToken) {
+                //This is where we will begin associator logic. We need to keep
+                // in mind that it needs to be repeatable.
+                associations(wC);
+
             }
+            // I'm not sure if workingChar is really what I want to append to yet but it's a work in progress
         }
-        int startingPoint = letterCounter + 1;
-        workingCheck[0] = fileArray[startingPoint];
-        if (workingCheck == openBraceToken)
-        {
-            startingPoint++;
-            workingCheck[0] = fileArray[startingPoint];
-        }
-        // This will be the association loop; we need to write it to be
-        // reusable as many times as necessary.
-        if (workingCheck == nameToken)
-        {
-            startingPoint++;
-            workingCheck[0] = fileArray[startingPoint];
-            int associationStartIdx = workingCheck[0];
-            for (int i = 0; i < alphasLength; i++) {
-                if (workingCheck[i] == alphas[i]) {
-                    letterCounter++;
-                    assocationBool = true;
-                }
+    }
+    letterCounter = 0;
+    wC[0] = fileArray[tracker];
+    if (wC == nameToken)
+    {
+        tracker++;
+        wC[0] = fileArray[tracker];
+    }
 
-                else {
-                    assocationBool = false;
-                }
-            } // At this point letterCounter will be sitting at the END of the first associaton.
-             // associationStartIdx is the beginning of the association, therefore associationStartIdx
-            // through letterCounter is the association.
+    for (int i = 0; i < alphasLength; i++) {
+        // This is the same loop I'm using above with the bool swapped out
+        if (wC[i] != alphas[i]) {
+            assocationBool = false;
+        }
+        if (workingCheck[i] == alphas[i]) {
+            assocationBool = true;
+            workingMemKeys[i] = fileArray[i];
             letterCounter++;
-            workingCheck[0] = fileArray[letterCounter];
-            if (workingCheck == nameToken) {
-                // Repeat Association Loop/Logic
-            }
-            if (workingCheck == endAssociationsToken) {
-                // End Associations Loop
-            }
-
-
+            tracker++;
         }
-// we will need a demlimiter to tell the association loop when to end
-
-    }
-
+    // we will need a demlimiter to tell the association loop when to end
+}
 
 
-
-
-
-    }
 
 
 
