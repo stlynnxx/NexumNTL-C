@@ -824,3 +824,12 @@ newCheck.
 
 So far all I've done today is basically change writeTarget to writeFlag so that encode can save the conded morpheme to
 the correct place within the struct. I also changed the struct it's writing to over to export.
+
+8/25/2026-
+
+I think I've roughly got the 'outline' of the rewrite done and now I'm going from the source generator up and addressing
+issues and errors and such; tonight I introduced some dynamic memory within the Lexer and plan to do more as I go along!
+It's always exciting to make any kind of progress in here!
+
+I may try and do some more work tonight before the coffee wears off and bed calls my name too seductively.
+

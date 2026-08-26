@@ -36,8 +36,8 @@ typedef struct {
 // This is what is actually being appended to the file
 void format(FILE *fp, InputForm *form) {
      fprintf(fp, "%s\n", "");
-     char memoryKeyPrefix[20] = "{'";
-     char memoryKeySuffix[20] = "':{";
+     char memoryKeyPrefix[5] = "{'";
+     char memoryKeySuffix[5] = "':{";
      fprintf(fp, "%s", memoryKeyPrefix);
      fprintf(fp,"%s", form->memoryKey);
      fprintf(fp, "%s", memoryKeySuffix);

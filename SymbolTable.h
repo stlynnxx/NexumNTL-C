@@ -42,7 +42,7 @@ typedef enum {
     COMMA = ',',
     ASSOCIATOR = '@',
     LINEDELMITER = '\n',
-    ENDOFFILE = 'NULL',
+    ENDOFFILE = '0',
     COLON = ':',
     SPACE = ' ',
     } Symbols;

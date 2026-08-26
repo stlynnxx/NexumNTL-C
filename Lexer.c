@@ -57,7 +57,19 @@ void wCCheck(char wC, char location[30]) {
     printf("wC Check %s: %c\n", location, wC);
 
 }
-
+void ensure_capacity(Buffers *buf, size_t needed) {
+    if (buf->len + needed >= buf->cap) {
+        size_t new_cap = buf->cap * 2;
+        char *temp = realloc(buf->data, new_cap);
+        if (!temp) {
+            free(buf->data);
+            perror("realloc failed");
+            exit(EXIT_FAILURE);
+        }
+        buf->data = temp;
+        buf->cap = new_cap;
+    }
+}
 void associations(char wC, MemoryFileSplit *split, Breakdown *breakdown)
 {
     // Whenever associations is called initally wC will be on
@@ -107,8 +119,8 @@ void associations(char wC, MemoryFileSplit *split, Breakdown *breakdown)
                 if (isalpha(wC)) {
                     while (isalpha(wC)) {
 
-
-                        breakdown->associations[workingAssocationsIdx] = wC;
+                        ensure_capacity(&breakdown->associations, 1);
+                        breakdown->associations.data[breakdown->memoryKey.len] = wC;
                         printf("Tracker check 118: %d\n", breakdown->tracker);
                         wC = increment(split, breakdown);
                         printf("Tracker Check line 120: %d\n", breakdown->tracker);
@@ -175,13 +187,36 @@ void associator(char wC,int *tracker, MemoryFileSplit *split, Breakdown *breakdo
         }
     }
 }
+void breakdown_init(Breakdown *brk) {
+    brk->associations.len = 0;
+    brk->associations.cap = 0;
+    brk->memoryKey.len = 0;
+    brk->memoryKey.cap = 0;
+    brk->memoryKey.data = malloc(32);
+    brk->associations.data = malloc(64);
+    brk->workingAssociators.data = malloc(32);
+    if (!brk->memoryKey.data || !brk->associations.data || !brk->workingAssociators.data) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+}
+void breakdown_free(Breakdown *brk) {
+    free(brk->memoryKey.data);
+    free(brk->associations.data);
+    free(brk->workingAssociators.data);
+
+}
 
 void crawler(FILE *fp) {
     MemoryFileSplit memoryFileSplit;
     Breakdown breakdown;
+    breakdown_init(&breakdown);
+    // Sizes
+    size_t assocsReturnCapacity = 64;
+    size_t assocsReturnLen = 0;
 
     int tracker = 0;
-    char associationsReturn[2000];
+
     char workingCheck[5];
     char wC;
     char workingMemKeys[200];
@@ -326,7 +361,7 @@ void crawler(FILE *fp) {
 
                             //
                             printf("Tracker check pre associations: %d\n", breakdown.tracker);
-                            associations(wC, &memoryFileSplit, &breakdown);
+                            associations(wC, &memoryFileSplit, &breakdown, &assocsReturnLen, assocsReturnCapacity);
                             printf("Tracker check post associations: %d\n", breakdown.tracker);
                             wC = increment(&memoryFileSplit, &breakdown);
                             printf("Tracker Check Line 339: %d\n", breakdown.tracker);
@@ -379,6 +414,7 @@ void crawler(FILE *fp) {
         printf("Memkey: %s\n", breakdown.memoryKey);
         printf("Associations: %s\n", breakdown.associations);
         printf("Working Associators: %s\n", breakdown.workingAssociators);
+        breakdown_free(&breakdown);
 
 
     }
