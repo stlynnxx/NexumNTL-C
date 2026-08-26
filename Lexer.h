@@ -12,23 +12,21 @@ void lRun();
 #define ROW 20
 #define COLUMN 20
 typedef struct {
-    char mainArray[2000];
-    char splitArray[MAX_ASSOC][MAX_ASSOC_LEN];
-} MemoryFileSplit;
-
-typedef struct {} Add;
-
-typedef struct {
     char *data;
     size_t len;
     size_t cap;
-} Buffers;
+} DynamicBuffers;
 
 typedef struct {
-    Buffers memoryKey;
+    DynamicBuffers mainArray;
+    // We may end up coming back in here and creating a second array to handle nexcode passes
+} MemoryFileLoad;
+
+typedef struct {
+    DynamicBuffers memoryKey;
     int assocationCount;
-    Buffers associations;
-    Buffers workingAssociators;
+    DynamicBuffers associations;
+    DynamicBuffers workingAssociators;
     int tracker;
 } Breakdown;
 
