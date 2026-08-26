@@ -833,3 +833,5 @@ It's always exciting to make any kind of progress in here!
 
 I may try and do some more work tonight before the coffee wears off and bed calls my name too seductively.
 
+I think I've gotten Lexer.c updated after the memory changes to the Breakdown struct!
+

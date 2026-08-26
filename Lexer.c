@@ -120,7 +120,7 @@ void associations(char wC, MemoryFileSplit *split, Breakdown *breakdown)
                     while (isalpha(wC)) {
 
                         ensure_capacity(&breakdown->associations, 1);
-                        breakdown->associations.data[breakdown->memoryKey.len] = wC;
+                        breakdown->associations.data[breakdown->associations.len] = wC;
                         printf("Tracker check 118: %d\n", breakdown->tracker);
                         wC = increment(split, breakdown);
                         printf("Tracker Check line 120: %d\n", breakdown->tracker);
@@ -128,7 +128,8 @@ void associations(char wC, MemoryFileSplit *split, Breakdown *breakdown)
                     }
                 }
                 if (isalnum(wC)) {
-                    breakdown->associations[workingAssociatorIdx] = wC;
+                    ensure_capacity(&breakdown->associations, 1);
+                    breakdown->associations.data[breakdown->associations.len] = wC;
                     printf("Tracker check 126: %d\n", breakdown->tracker);
                     wC = increment(split, breakdown);
                     printf("Tracker check 128: %d\n", breakdown->tracker);
@@ -167,15 +168,16 @@ void associator(char wC,int *tracker, MemoryFileSplit *split, Breakdown *breakdo
         if (isalpha(wC))
         {
             associatorLetterCounter++;
-            breakdown->workingAssociators[workingAssociatorIdx] = wC;
-
+            ensure_capacity(&breakdown->workingAssociators, 1);
+            breakdown->workingAssociators.data[breakdown->workingAssociators.len] = wC;
             workingAssociatorIdx++;
             (*tracker)++;
             wC = increment(split, breakdown);
         }
         if (isalpha(wC) != true && isalnum(wC)) {
             associatorLetterCounter++;
-            breakdown->workingAssociators[workingAssociatorIdx] = wC;
+            ensure_capacity(&breakdown->workingAssociators, 1);
+            breakdown->workingAssociators.data[breakdown->workingAssociators.len] = wC;
 
             workingAssociatorIdx++;
             (*tracker)++;
@@ -287,24 +289,25 @@ void crawler(FILE *fp) {
             wC = increment(&memoryFileSplit, &breakdown); // This should increment by one per call [3]
             wCCheck(wC, "First Check inside alphas"); // Should be second char of memkey
             if (isalpha(wC)) {
-                breakdown.memoryKey[0] = wC;
+                ensure_capacity(&breakdown.memoryKey, 1);
+                breakdown.memoryKey.data[breakdown.memoryKey.len] = wC;
+                wC = increment(&memoryFileSplit, &breakdown);
+                breakdown.memoryKey.len++;
             }
             // The idea here is that the while loop will run until memkeybool
             // gets flipped and THEN if wC == nameToken runs
             while (memoryKeyBool == true) {
-                int wmcIdx = 1;
-                printf("memkeybool == true loop running\n");
-                // This needs to be updated so it appends to Breakdown instead
-                breakdown.memoryKey[wmcIdx] = wC;
+                ensure_capacity(&breakdown.memoryKey, 1);
+                breakdown.memoryKey.data[breakdown.memoryKey.len] = wC;
                 wC = increment(&memoryFileSplit, &breakdown);
-
-                wmcIdx++;
+                breakdown.memoryKey.len++;
                 wCCheck(wC, "while loop check");
 
                 if (isalnum(wC)) {
-                    breakdown.memoryKey[wmcIdx] = wC;
-                    wmcIdx++;
+                    ensure_capacity(&breakdown.memoryKey, 1);
+                    breakdown.memoryKey.data[breakdown.memoryKey.len] = wC;
                     wC = increment(&memoryFileSplit, &breakdown);
+                    breakdown.memoryKey.len++;
                 }
                 if (wC == NAMETOKEN) {
                     wCCheck(wC, "NAMETOKEN two check one");
@@ -361,7 +364,7 @@ void crawler(FILE *fp) {
 
                             //
                             printf("Tracker check pre associations: %d\n", breakdown.tracker);
-                            associations(wC, &memoryFileSplit, &breakdown, &assocsReturnLen, assocsReturnCapacity);
+                            associations(wC, &memoryFileSplit, &breakdown);
                             printf("Tracker check post associations: %d\n", breakdown.tracker);
                             wC = increment(&memoryFileSplit, &breakdown);
                             printf("Tracker Check Line 339: %d\n", breakdown.tracker);
