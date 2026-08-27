@@ -835,3 +835,11 @@ I may try and do some more work tonight before the coffee wears off and bed call
 
 I think I've gotten Lexer.c updated after the memory changes to the Breakdown struct!
 
+8/27/2026-
+
+I'm up late and my stomach doesn't feel great so I'm just pecking around in here a little bit. I accessed breakdown_init
+from Parser and also set up dynamic buffers for export in parser.h and set up an init for that from within parser.c.
+I'm not really sure if i'll do much more or not.
+
+I also went through and replaced the check() calls with newCheck() calls
+

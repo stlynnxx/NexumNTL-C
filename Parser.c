@@ -13,11 +13,6 @@
 
 
 
-typedef struct {
-    char assocScratch[80];
-    char associatorScratch[80];
-    char memKeyScratch[80];
-} builder;
 
 // int workIdx = breakdownIdx + 1;
 
@@ -209,7 +204,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                  break;
             case 'I':
                 rowSize = sizeof(valuesMatrix[I])/sizeof(valuesMatrix[I][0]);
-                verify(buffer, rowSize, I, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, I, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -219,7 +214,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'J':
                 rowSize = sizeof(valuesMatrix[J])/sizeof(valuesMatrix[J][0]);
-                verify(buffer, rowSize, J, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, J, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -229,7 +224,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'K':
                 rowSize = sizeof(valuesMatrix[K])/sizeof(valuesMatrix[K][0]);
-                verify(buffer, rowSize, K, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, K, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -239,7 +234,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'L':
                 rowSize = sizeof(valuesMatrix[L])/sizeof(valuesMatrix[L][0]);
-                verify(buffer, rowSize, L,scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, L,scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -249,7 +244,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'M':
                 rowSize = sizeof(valuesMatrix[M])/sizeof(valuesMatrix[M][0]);
-                verify(buffer, rowSize, M, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, M, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -259,7 +254,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'N':
                 rowSize = sizeof(valuesMatrix[N])/sizeof(valuesMatrix[N][0]);
-                verify(buffer, rowSize, N, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, N, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -269,7 +264,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'O':
                 rowSize = sizeof(valuesMatrix[O])/sizeof(valuesMatrix[O][0]);
-                verify(buffer, rowSize, O, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, O, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -279,7 +274,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'P':
                 rowSize = sizeof(valuesMatrix[P])/sizeof(valuesMatrix[P][0]);
-                verify(buffer, rowSize, P, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, P, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -289,7 +284,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'Q':
                 rowSize = sizeof(valuesMatrix[Q])/sizeof(valuesMatrix[Q][0]);
-                verify(buffer, rowSize, Q, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, Q, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -299,7 +294,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'R':
                 rowSize = sizeof(valuesMatrix[R])/sizeof(valuesMatrix[R][0]);
-                verify(buffer, rowSize, R, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, R, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -309,7 +304,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'S':
                 rowSize = sizeof(valuesMatrix[S])/sizeof(valuesMatrix[S][0]);
-                verify(buffer, rowSize, S, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, S, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -319,7 +314,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'T':
                 rowSize = sizeof(valuesMatrix[T])/sizeof(valuesMatrix[T][0]);
-                verify(buffer, rowSize, T, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, T, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -329,7 +324,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'U':
                 rowSize = sizeof(valuesMatrix[U])/sizeof(valuesMatrix[U][0]);
-                verify(buffer, rowSize, U, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, U, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -339,7 +334,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'V':
                 rowSize = sizeof(valuesMatrix[V])/sizeof(valuesMatrix[V][0]);
-                verify(buffer, rowSize, V, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, V, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -349,7 +344,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'W':
                 rowSize = sizeof(valuesMatrix[W])/sizeof(valuesMatrix[W][0]);
-                verify(buffer, rowSize, W, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, W, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -359,7 +354,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'X':
                 rowSize = sizeof(valuesMatrix[X])/sizeof(valuesMatrix)[X][0];
-                verify(buffer, rowSize, X, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, X, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -369,7 +364,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'Y':
                 rowSize = sizeof(valuesMatrix[Y])/sizeof(valuesMatrix[Y][0]);
-                verify(buffer, rowSize, Y, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, Y, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -379,7 +374,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
                 break;
             case 'Z':
                 rowSize = sizeof(valuesMatrix[Z])/sizeof(valuesMatrix[Z][0]);
-                verify(buffer, rowSize, Z, scratchOneIdx, writeTarget);
+                verify(buffer, rowSize, Z, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
                     verifyBool = false;
                 }
@@ -1543,7 +1538,8 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
         wC = increment(breakdownIdx, wC, breakdown, 1);
         writeTarget = builderr->memKeyScratch; // Assigns write target
         // The next line is what will be replaced with newCheck
-        breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        /// breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 1, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
         
         export_->memKey[breakdownIdx] = writeTarget[breakdownIdx]; // We need to replace breakdownIdx
 
@@ -1579,7 +1575,8 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
         }
         wC = increment(breakdownIdx, wC, breakdown, 2);
         writeTarget = builderr->assocScratch; // Assigns write target
-        breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        // breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 2, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
         export_->assoc[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace BreakdownIDX
 
         /* This was originally updating wC from memoryKey before increment; i've implemented increment with 2 for association because
@@ -1616,7 +1613,8 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
         }
         wC = increment(breakdownIdx, wC, breakdown, 3);
         writeTarget = builderr->associatorScratch; // Assigns write target
-        breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        // breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 3, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
         export_->associators[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace breakdownIdx
         wC = increment(breakdownIdx, wC, breakdown, 3);
         if (wC == NAMETOKEN) {
@@ -1668,19 +1666,52 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
 
 
 
-}
+//}
 
-void flag() {
+void flag()
+    {
     nexcodeFlag = true;
 }
+void exp_init(Export *export_) {
+    export_->assoc.length = 0;
+    export_->assoc.capacity = 0;
+    export_->memKey.length = 0;
+    export_->memKey.capacity = 0;
+    export_->memKey.data = malloc(32);
+    export_->assoc.data = malloc(64);
+    export_->associators.data = malloc(32);
+    if (!export_->memKey.data || !export_->assoc.data || !export_->associators.data) {
+        perror("exp_init malloc failed");
+        exit(EXIT_FAILURE);
+    }
+}
+void exp_add(Export *export_, int value) {
 
+
+    }
+void build_init(builder *builderr_) {
+    builderr->associatorScratch.length = 0;
+    builderr->associatorScratch.capacity = 0;
+    builderr->memKeyScratch.length = 0;
+    builderr->memKeyScratch.capacity = 0;
+    builderr->memKeyScratch.data = malloc(32);
+    builderr->assocScratch.data = malloc(64);
+    builderr->associatorScratch.data = malloc(32);
+    if (!builderr->memKeyScratch.data || !builderr->assocScratch.data || !builderr->associatorScratch.data) {
+        perror("build_init malloc failed");
+        exit(EXIT_FAILURE);
+    }
+}
 
 int prun() {
     // This establishes the struct instances and
     // passes them into parseAssocs
     Breakdown breakdown;
+    breakdown_init(&breakdown);
     Export export_;
+    exp_init(&export_);
     builder builderr;
+    build_init(&builderr);
     parse(&breakdown, &export_, &builderr);
     return 0;
 }

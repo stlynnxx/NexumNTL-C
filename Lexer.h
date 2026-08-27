@@ -7,10 +7,13 @@
 #include <stddef.h>
 
 void lRun();
+void breakdown_init();
+void breakdown_free();
 #define MAX_ASSOC 200
 #define MAX_ASSOC_LEN 200
 #define ROW 20
 #define COLUMN 20
+
 typedef struct {
     char *data;
     size_t len;
