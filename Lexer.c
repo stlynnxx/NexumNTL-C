@@ -20,22 +20,46 @@
 #define COLUMN 20
 
 
-
-void ensure_capacity(DynamicBuffers *buf, size_t needed) {
-    if (buf->len + needed >= buf->cap) {
-        size_t new_cap = buf->cap * 2;
-        char *temp = realloc(buf->data, new_cap);
-        if (!temp) {
-            free(buf->data);
-            perror("realloc failed");
-            exit(EXIT_FAILURE);
-        }
-        buf->data = temp;
-        buf->cap = new_cap;
+// Ensuring proper capacity for the array before writing
+static int ensure_capacity(DynamicBuffers *buf, size_t extra) {
+   size_t needed = buf->len + extra;
+    if (needed <= buf->cap) {
+        return 0;
     }
-}                                                              
+    size_t capacity = buf->cap ? buf->cap : 16;
+    while (needed > capacity) {
+        capacity *= 2;
+    }
+    char *tmp = realloc(buf->data, capacity);
+    if (!tmp)
+        return -1;
 
+    buf->data = tmp;
+    buf->cap = capacity;
+    return 0;
+}
 
+// append_bytes is for appending raw bytes from the given input
+int append_bytes(DynamicBuffers *buf, const char *byte, size_t x) {
+    if (ensure_capacity(buf, x) != 0) {
+        return -1; // failure
+    }
+    memcpy(buf->data + buf->len, byte, x);
+    buf->len += x;
+    return 0;
+}
+
+// This is an interface for passing a string to append bytes
+int append_string(DynamicBuffers *buf, const char *string) {
+    return (append_bytes(buf, string, strlen(string)));
+}
+
+// This is an interface for passing chars to append_bytes
+int append_char(DynamicBuffers *buf, char c) {
+    return (append_bytes(buf, &c, 1));
+}
+
+// This is for loading the nexfile from storage
 void *loadNexFile(FILE *fp, MemoryFileLoad *load) {
     fseek(fp, 0, SEEK_END);
     long size = ftell(fp);
@@ -48,6 +72,7 @@ void *loadNexFile(FILE *fp, MemoryFileLoad *load) {
 
 }
 
+// This increments wC
 char increment(MemoryFileLoad *load, Breakdown *breakdown) {
     char wC;
     breakdown->tracker++;
@@ -57,11 +82,13 @@ char increment(MemoryFileLoad *load, Breakdown *breakdown) {
     return wC;
 }
 
+// Checking wC for debugging
 void wCCheck(char wC, char location[30]) {
     printf("wC Check %s: %c\n", location, wC);
 
 }
 
+// The associatons loop
 void associations(char wC, MemoryFileLoad *split, Breakdown *breakdown)
 {
     // Whenever associations is called initally wC will be on
@@ -112,7 +139,7 @@ void associations(char wC, MemoryFileLoad *split, Breakdown *breakdown)
                     while (isalpha(wC)) {
 
                         ensure_capacity(&breakdown->associations, 1);
-                        breakdown->associations.data[breakdown->associations.len] = wC;
+                        append_char(&breakdown->associations, wC);
                         printf("Tracker check 118: %d\n", breakdown->tracker);
                         wC = increment(split, breakdown);
                         printf("Tracker Check line 120: %d\n", breakdown->tracker);
@@ -120,8 +147,9 @@ void associations(char wC, MemoryFileLoad *split, Breakdown *breakdown)
                     }
                 }
                 if (isalnum(wC)) {
+
                     ensure_capacity(&breakdown->associations, 1);
-                    breakdown->associations.data[breakdown->associations.len] = wC;
+                    append_char(&breakdown->associations, wC);
                     printf("Tracker check 126: %d\n", breakdown->tracker);
                     wC = increment(split, breakdown);
                     printf("Tracker check 128: %d\n", breakdown->tracker);
@@ -139,7 +167,7 @@ void associations(char wC, MemoryFileLoad *split, Breakdown *breakdown)
 char setr(MemoryFileLoad *load) {
     char wC;
     ensure_capacity(&load->mainArray, 1);
-    load->mainArray.data[load->mainArray.len] = wC;
+    append_char(&load->mainArray, wC);
     free(load->mainArray.data);
     return wC;
 }
@@ -163,7 +191,7 @@ void associator(char wC,int *tracker, MemoryFileLoad *load, Breakdown *breakdown
         {
             associatorLetterCounter++;
             ensure_capacity(&breakdown->workingAssociators, 1);
-            breakdown->workingAssociators.data[breakdown->workingAssociators.len] = wC;
+            append_char(&breakdown->workingAssociators, wC);
             workingAssociatorIdx++;
             (*tracker)++;
             wC = increment(load, breakdown);
@@ -171,7 +199,7 @@ void associator(char wC,int *tracker, MemoryFileLoad *load, Breakdown *breakdown
         if (isalpha(wC) != true && isalnum(wC)) {
             associatorLetterCounter++;
             ensure_capacity(&breakdown->workingAssociators, 1);
-            breakdown->workingAssociators.data[breakdown->workingAssociators.len] = wC;
+            append_char(&breakdown->workingAssociators, wC);
 
             workingAssociatorIdx++;
             (*tracker)++;

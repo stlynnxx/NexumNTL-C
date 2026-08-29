@@ -843,3 +843,19 @@ I'm not really sure if i'll do much more or not.
 
 I also went through and replaced the check() calls with newCheck() calls
 
+8/29/2026-
+
+So far this morning I've been back in Lexer finishing up the dynamic memory
+stuff I added before I go and work on the same in the parser. Every line of
+code that gets written brings us a step closer to being done! I'm still just
+fighting to get back to where I was before my personal life went sideways
+but every day I feel closer and closer to gettingh back there.
+
+I finished out the helper functions for realloc and such in lexer and now
+I need to go into the loops and update any append processes, but.
+
+I don't think my dog is willing to wait on me to do all of that before I
+take him outside. Maybe I can at least get started, but, I can't ignore doggo!
+
+He let me get through it real quick! What a good boy.
+
