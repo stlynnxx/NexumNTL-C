@@ -47,8 +47,7 @@ typedef enum {
     SPACE = ' ',
     } Symbols;
 
-typedef struct {
-} Encodings;
+
 
 extern const char alphas[];
 extern const int alphasLength;
@@ -66,8 +65,13 @@ struct MemoryKey {
     } associatonBank;
 
 };
+typedef struct {
+    char *data;
+    size_t length;
+    size_t capacity;
+} MatrixBuffers;
 
-char *upperValues[400][400] = {
+char *encoded_matrix[400][400] = {
     {"A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "AX", "A11", "NULL"}, // A
     {"NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL"}, // B
     {"C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "NULL", "NULL", "NULL", "NULL"}, // C
@@ -97,31 +101,7 @@ char *upperValues[400][400] = {
 
 };
 
-// These plus the following Values[] array are for holding the translated versions of morphemes and related info
-typedef enum {
-    VALUE_HEX,
-    VALUE_STRING,
-} ValueType;
-typedef enum {
-    KEY_UPPER,
-    KEY_LOWER
-} Keytype;
-typedef struct {
-    Keytype type;
-    union {
-        const char *lowerKey;
-        const char *upperKey;
-    };
-    int letterCount;
-} Key;
-typedef struct {
-    ValueType type;
-    Key key;
-    union {
-        unsigned int hex;
-        char *string;
-    } datatype;
-} Value;
+
 
 
 // The matrix sizes are placeholders
@@ -154,10 +134,7 @@ char *valuesMatrix[400][400] = {
 {"NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL"} // Z
 };
 size_t valuesSize = sizeof(valuesMatrix) / sizeof(valuesMatrix[0][0]);
-char encoded_matrix[40][40] = {
-    {"A0", "A1", "A2"},
-    {}
-};
+
 
 int hex_matrix[40][40] = {
     {0x15},
@@ -185,232 +162,16 @@ int counts_matrix[20][20] = {
     {4,4,0,0,0,0,0,0,0,0,0,0},
     {4,4,0,0,0,0,0,0,0,0,0,0}
 };
-Value Values[] = {
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Able", .letterCount = 4}, .datatype.string = "A0"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "able", .letterCount = 4}, .datatype.hex = 0x15},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .upperKey = "Al", .letterCount = 2}, .datatype.string = "A1"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "al", .letterCount = 2}, .datatype.hex = 0x1F},
-    {.type = VALUE_STRING, .key = { .type = KEY_UPPER, .upperKey = "As", .letterCount = 2}, .datatype.string = "A2"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "as", .letterCount = 2}, .datatype.hex = 0x16},
-    {.type = VALUE_STRING, .key = { .type = KEY_UPPER, .upperKey = "At", .letterCount = 2}, .datatype.string = "A3"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "at", .letterCount = 2}, .datatype.hex = 0x1B},
-    {.type = VALUE_STRING, .key = { .type = KEY_UPPER, .upperKey = "Ance", .letterCount = 4}, .datatype.string = "A4"},
-    {.type = VALUE_STRING,  .key = { .type = KEY_LOWER, .lowerKey = "ance", .letterCount = 4 }, .datatype.string = "A5"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "And", .letterCount = 3}, .datatype.string = "A6"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "and", .letterCount = 3}, .datatype.hex = 0x03},
-    {.type = VALUE_STRING, .key = { .type = KEY_UPPER, .upperKey = "Ante", .letterCount = 4}, .datatype.string = "A7"},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "ante", .letterCount = 4}, .datatype.string = "A8"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Anti", .letterCount = 4}, .datatype.string = "A9"},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "anti", .letterCount = 4}, .datatype.string = "AX"},
-    {.type = VALUE_STRING, .key = { .type = KEY_UPPER, .upperKey = "Cede", .letterCount = 4}, .datatype.string = "C0"},
-    {.type = VALUE_STRING, .key = {.type =  KEY_LOWER, .lowerKey = "cede", .letterCount = 4}, .datatype.string = "C1"},
-    {.type = VALUE_STRING, .key = { .type = KEY_UPPER, .upperKey = "Cess", .letterCount = 4}, .datatype.string = "C2"},
-    {.type = VALUE_STRING, .key = { .type= KEY_LOWER, .lowerKey = "cess", .letterCount = 4}, .datatype.string = "C3"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Circum", .letterCount = 6}, .datatype.string = "C4"},
-    {.type = VALUE_STRING, .key = { .type= KEY_LOWER, .lowerKey = "circum", .letterCount = 6}, .datatype.string = "C5"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Clude", .letterCount = 5}, .datatype.string = "C6"},
-    {.type = VALUE_STRING, .key = {. type= KEY_LOWER, .lowerKey = "clude", .letterCount = 5}, .datatype.string = "C7"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Dict", .letterCount = 4}, .datatype.string = "D0"},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "dict", .letterCount = 4}, .datatype.string = "D1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Ed", .letterCount = 2}, .datatype.string = "E0"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "ed", .letterCount = 2}, .datatype.hex = 0x06},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Er", .letterCount = 2}, .datatype.string = "E2"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "er", .letterCount = 2}, .datatype.hex = 0x08},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "En", .letterCount = 2}, .datatype.string = "E1"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "en", .letterCount = 2}, .datatype.hex = 0x1C},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "For_", .letterCount = 4}, .datatype.string = "F0"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "for_", .letterCount = 4}, .datatype.hex = 0x12},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Form", .letterCount = 4}, .datatype.string = "F1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "form", .letterCount = 4}, .datatype.string = "F2"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Gress", .letterCount = 5}, .datatype.string = "G0"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "gress", .letterCount = 5}, .datatype.string = "G1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "He", .letterCount = 2}, .datatype.string = "H0"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "he", .letterCount = 2}, .datatype.hex = 0x1A},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "In", .letterCount = 2}, .datatype.string = "I0"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey =  "in", .letterCount = 2}, .datatype.hex = 0x0B},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Ing", .letterCount = 3}, .datatype.string = "I1"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "ing", .letterCount = 3},.datatype.hex = 0x02},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Is", .letterCount = 2}, .datatype.string = "I2"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "is", .letterCount = 2}, .datatype.hex = 0x0E},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Inter", .letterCount = 5}, .datatype.string = "I3"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "inter", .letterCount = 5}, .datatype.string = "I4"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Intra", .letterCount = 5}, .datatype.string = "I5"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "intra", .letterCount = 5}, .datatype.string = "I6"},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "ject", .letterCount = 4}, .datatype.string = "J1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Less", .letterCount = 4}, .datatype.string = "L0"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "less", .letterCount = 4}, .datatype.string = "L1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Ly", .letterCount = 2}, .datatype.string = "L2"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "ly", .letterCount = 2}, .datatype.hex = 0x0F},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Magni", .letterCount = 5}, .datatype.string = "M0"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "magni", .letterCount = 5}, .datatype.string = "M1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Mark", .letterCount = 4}, .datatype.string = "M2"},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "mark", .letterCount = 4}, .datatype.string = "M3"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Ment", .letterCount = 4}, .datatype.string = "M4"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "ment", .letterCount = 4}, .datatype.hex = 0x11},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Micro", .letterCount = 5}, .datatype.string = "M5"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "micro", .letterCount = 5}, .datatype.string = "M6"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Milli", .letterCount = 5}, .datatype.string = "M7"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "milli", .letterCount = 5}, .datatype.string = "M8"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Multi", .letterCount = 5}, .datatype.string = "M9"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "multi", .letterCount = 5}, .datatype.string = "MX"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Ness", .letterCount = 4}, .datatype.string = "N0"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "ness", .letterCount = 4}, .datatype.hex = 0x1D},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Nd", .letterCount = 2}, .datatype.string = "N1"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER,.lowerKey = "nd", .letterCount = 2}, .datatype.hex = 0x13},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Of", .letterCount = 2}, .datatype.string = "O0"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "of", .letterCount = 2}, .datatype.hex = 0x05},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "On", .letterCount = 2}, .datatype.string = "O1"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "on", .letterCount = 2}, .datatype.hex = 0x14},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Or", .letterCount = 2}, .datatype.string = "O2"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "or", .letterCount = 2}, .datatype.hex = 0x1E},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Re", .letterCount = 2}, .datatype.string = "R0"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "re", .letterCount = 2}, .datatype.hex = 0x0C},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Retro", .letterCount = 5}, .datatype.string = "R1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "retro", .letterCount = 5}, .datatype.string = "R2"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Super", .letterCount = 5}, .datatype.string = "S0"},
-    {.type = VALUE_STRING, .key = {.type = KEY_LOWER, .lowerKey = "super", .letterCount = 5}, .datatype.string = "S1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Th", .letterCount = 2}, .datatype.string = "T0"},
-    {.type = VALUE_HEX, .key = {.type = KEY_LOWER, .lowerKey = "th", .letterCount = 2},  .datatype.hex = 0x07},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "That", .letterCount = 4}, .datatype.string = "T1"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "that", .letterCount = 4}, .datatype.hex = 0x04},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "The", .letterCount = 3}, .datatype.string = "T2"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "the", .letterCount = 3}, .datatype.hex = 0x19},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Tion", .letterCount = 4}, .datatype.string = "T3"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "tion", .letterCount = 4}, .datatype.hex = 0x01},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "To", .letterCount = 2}, .datatype.string = "T4"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "to", .letterCount = 2}, .datatype.hex = 0x10},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Un", .letterCount = 2}, .datatype.string = "U0"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "un", .letterCount = 2}, .datatype.hex = 0x18},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "Under", .letterCount = 5}, .datatype.string = "U1"},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "under", .letterCount = 5}, .datatype.string = "U2"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "Vert", .letterCount = 4}, .datatype.string = "V0"},
-    {.type = VALUE_STRING, .key = { .type = KEY_LOWER, .lowerKey = "vert", .letterCount = 4}, .datatype.string = "V1"},
-    {.type = VALUE_STRING, .key = {.type = KEY_UPPER, .upperKey = "With", .letterCount = 4}, .datatype.string = "W0"},
-    {.type = VALUE_HEX, .key = { .type = KEY_LOWER, .lowerKey = "with", .letterCount = 4}, .datatype.hex = 0x17}
-};
-
-
 
 int counts[] = {
     4,2,2,2,4,3,4,4,4,4,6,5,4,2,2,2,4,4,5,2,2,3,5,5,2,4,4,2,5,4,
     4,5,5,5,4,2
 };
-
+/*
 size_t uppersSize = sizeof(*upperKeys) / sizeof(*upperKeys[0]);
 size_t lowersSize = sizeof(*lowerKeys) / sizeof(*lowerKeys[0]);
 size_t countsSize = sizeof(*counts) / sizeof(counts[0]);
-
-typedef union {
-    int hexVal;
-    char *string;
-} Vals;
-
-typedef struct Entry {
-    char *key;
-    /*
-    char *value;
-    int *hexValue;
-    */
-    Vals values;
-    struct Entry *next; // collision chaining
-} Entry;
-
-typedef struct {
-    Entry *buckets[TABLE_SIZE];
-} HashTable;
-
-// Hash function
-unsigned int hash(const char *key) {
-    unsigned int h = 0;
-    while (*key) {
-        h = (h * 31) + *key++;
-    }
-    return h % TABLE_SIZE;
-}
-
-// Insert a pair
-void insert(HashTable *table,const char *key,const char *value, const int *hexVal) {
-    unsigned int idx = hash(key);
-    Entry *entry = malloc(sizeof(Entry));
-    entry->key = strdup(key);
-    entry->values.string = strdup(value);
-    entry->values.hexVal = *hexVal;
-    entry->next = table->buckets[idx];
-    table->buckets[idx] = entry;
-}
-// Lookup by key
-char *lookup(HashTable *table, const char *key) {
-    unsigned int idx = hash(key);
-    Entry *entry = table->buckets[idx];
-    while (entry) {
-        if (strcmp(entry->key, key) == 0) {
-            return entry->value;
-
-        }
-        entry = entry->next;
-    }
-    return NULL; // not found
-}
-
-size_t vSize = sizeof(Values) / sizeof(Values[0]);
-const char *getKeyString(Value *v)
-{
-    if (v->key.type == KEY_UPPER) {
-        return v->key.upperKey;
-    }
-    else if (v->key.type == KEY_LOWER) {
-        return v->key.lowerKey;
-    }
-    else if (v->datatype.hex) {
-        return v->datatype.hex;
-    }
-    else if (v->datatype.string) {
-        return v->datatype.string;
-    }
-}
-
-
-// Usage
-int useHashTable() {
-    HashTable table = {0}; // initializes all buckets to 0
-
-
-
-    for (int ii = 0; ii < vSize; ii++) {
-        insert(&table,)
-    }
-    // Uppers loop
-    for (int i = 0; i < uppersSize; i++) {
-        insert(&table, upperKeys[i], upperValues[i]);
-    }
-    // Lowers loop
-    for (int j = 0; j < lowersSize; j++) {
-        if (Values[j].datatype.string) {
-            insert(&table, lowerKeys[j], Values[j].datatype.string);
-        }
-        if (Values[j].datatype.hex) {
-            insert(&table, lowerKeys[j],);
-        }}
-    // Counts loop
-    for (int k = 0; k < countsSize; k++) {}
-
-    /* Example inserts
-    insert(&table, "under", "U0");
-    insert(&table, "re", "RO");*/
-
-    /* Example lookups
-     * lookup(&table, "under");
-     */
-}
-
-
-
-typedef struct {
-    char *word[];
-} Words;
-typedef struct {
-    int counts[];
-} Counts;
+*/
 
 
 // We should resize this later

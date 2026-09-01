@@ -859,3 +859,11 @@ take him outside. Maybe I can at least get started, but, I can't ignore doggo!
 
 He let me get through it real quick! What a good boy.
 
+
+8/31/2026-
+
+I didn't do anything crazy tonight, I just went and cleaned up some old code and started thinking about
+dynamic memory for the main array, but now my eyes are super heavy because it's night time and I had an
+exhausting day.
+
+Progress is progress.
