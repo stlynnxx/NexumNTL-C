@@ -65,13 +65,55 @@ struct MemoryKey {
     } associatonBank;
 
 };
+
+// These structs are the buffer for the matrix; only columns need to be expanded.
 typedef struct {
     char *data;
     size_t length;
     size_t capacity;
 } MatrixBuffers;
 
-char *encoded_matrix[400][400] = {
+typedef struct {
+    MatrixBuffers *cols;
+    size_t count;
+    size_t capacity;
+} Row;
+
+typedef struct {
+    Row row[26];
+} Table;
+
+
+int row_init(Row *row)
+{
+    row->cols = calloc(16, sizeof(MatrixBuffers));
+    if (!row->cols) return -1;
+    row->count    = 0;
+    row->capacity = 16;
+    return 0;
+}
+// This is for setting the row size
+int row_set(Row *row, size_t col, const char *value) {
+    if (col >= row->capacity) {
+        size_t new_capacity = row->capacity * 2;
+        MatrixBuffers *tmp = realloc(row->cols, sizeof(MatrixBuffers) * new_capacity);
+        if (!tmp) return (-1);
+            memset(row->cols, 0, sizeof(MatrixBuffers) * new_capacity);
+        row->cols = tmp;
+        row->capacity = new_capacity;
+    }
+    if (col >= row->count)
+        row->count = col + 1;
+    MatrixBuffers *cell = &row->cols[col];
+    if (cell->data) free(cell->data);
+    size_t len = strlen(value);
+    cell-> data = malloc(len + 1);
+    if (!cell->data) return (-1);
+    memcpy(cell->data, value, len + 1);
+    cell->length = cell->capacity = len;
+    return 0;
+}
+char *encoded_matrix[26][14] = {
     {"A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "AX", "A11", "NULL"}, // A
     {"NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL"}, // B
     {"C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "NULL", "NULL", "NULL", "NULL"}, // C
@@ -102,10 +144,8 @@ char *encoded_matrix[400][400] = {
 };
 
 
-
-
 // The matrix sizes are placeholders
-char *valuesMatrix[400][400] = {
+char *valuesMatrix[26][400] = {
     {"Able", "Al", "As", "At", "Ance", "ance", "And", "Ante", "ante", "Anti", "anti", "NULL"}, // A, 0
 {"NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL"}, // B, 1
 {"Cede", "cede", "Cess", "cess", "Circum", "circum", "Clude", "clude", "NULL", "NULL", "NULL", "NULL"}, // C, 2

@@ -867,3 +867,9 @@ dynamic memory for the main array, but now my eyes are super heavy because it's 
 exhausting day.
 
 Progress is progress.
+
+9/2/2026-
+
+I did a bit of work today again on getting dynamic memory set up for the matrix(es), although I have yet
+to finish it. I was working on another project before this and I think it's time for a break; I do plan
+to try and find myself back in here later, however!
