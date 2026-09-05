@@ -873,3 +873,13 @@ Progress is progress.
 I did a bit of work today again on getting dynamic memory set up for the matrix(es), although I have yet
 to finish it. I was working on another project before this and I think it's time for a break; I do plan
 to try and find myself back in here later, however!
+
+9/4/2026-
+
+So far tonight I've been cleaning up and reorganzing things in SymbolTable.c/.h; I also created Nexum.h and moved the
+dynamic buffer structs into there, as well as some others.
+
+I've also just been sort of jumping around and cleaning up some red lines that popped up as a result of moving stuff
+around.
+
+

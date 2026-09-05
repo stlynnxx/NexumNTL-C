@@ -2,8 +2,9 @@
 // Created by steviexx on 2/28/26.
 //
 
-#ifndef NEXUMNTL_LEXER_H
-#define NEXUMNTL_LEXER_H
+#ifndef LEXER_H
+#define LEXER_H
+#include "Nexum.h"
 #include <stddef.h>
 
 void lRun();
@@ -14,11 +15,7 @@ void breakdown_free();
 #define ROW 20
 #define COLUMN 20
 
-typedef struct {
-    char *data;
-    size_t len;
-    size_t cap;
-} DynamicBuffers;
+
 
 typedef struct {
     DynamicBuffers mainArray;

@@ -2,16 +2,13 @@
 // Created by steviexx on 3/31/26.
 //
 
-#ifndef NEXUMNTL_PARSER_H
+#ifndef PARSER_H
+#include "Nexum.h"
 #include <stddef.h>
-#define NEXUMNTL_PARSER_H
+#define PARSER_H
 
 int prun();
-typedef struct {
-    char *data;
-    size_t length;
-    size_t capacity;
-} DynamicBuffers;
+
 
 typedef struct {
     DynamicBuffers assoc;

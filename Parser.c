@@ -1,7 +1,7 @@
 //
 // Created by steviexx on 3/31/26.
 //
-
+#include "Nexum.h"
 #include "Parser.h"
 #include "Lexer.h"
 #include "SourceGenerator.h"
@@ -72,10 +72,10 @@ char increment(int breakdownIdx, char wC, Breakdown *breakdown, int direction) {
     return wC;
 }
 
-void encode(char *buffer[100], int foundI, int row, int scratchOneIdx, int flag) {
+int encode(char *buffer[100], int foundI, int row, int scratchOneIdx, int flag) {
     Export ex;
     char encodedMorpheme[10];
-    encodedMorpheme[0] = encoded_matrix[row][foundI];
+    encodedMorpheme[0] = encodedMatrix[row][foundI];
     // Should we have write target write to export at this point?
     // writeTarget[scratchOneIdx] = encodedMorpheme[0];
     switch (flag) {
@@ -100,6 +100,7 @@ int verify(char *buffer[100], int rowSiZe, int row, int scratchOneIdx, int flag)
             // match is found here
             foundI = i;
             encodeVal = encode(buffer, foundI, row, scratchOneIdx, flag);
+            return 1;
         }
         else {
             return 0;

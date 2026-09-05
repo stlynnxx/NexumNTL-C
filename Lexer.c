@@ -22,11 +22,11 @@
 
 // Ensuring proper capacity for the array before writing
 static int ensure_capacity(DynamicBuffers *buf, size_t extra) {
-   size_t needed = buf->len + extra;
-    if (needed <= buf->cap) {
+   size_t needed = buf->length + extra;
+    if (needed <= buf->capacity) {
         return 0;
     }
-    size_t capacity = buf->cap ? buf->cap : 16;
+    size_t capacity = buf->capacity ? buf->capacity : 16;
     while (needed > capacity) {
         capacity *= 2;
     }
@@ -35,7 +35,7 @@ static int ensure_capacity(DynamicBuffers *buf, size_t extra) {
         return -1;
 
     buf->data = tmp;
-    buf->cap = capacity;
+    buf->capacity = capacity;
     return 0;
 }
 
@@ -44,8 +44,8 @@ int append_bytes(DynamicBuffers *buf, const char *byte, size_t x) {
     if (ensure_capacity(buf, x) != 0) {
         return -1; // failure
     }
-    memcpy(buf->data + buf->len, byte, x);
-    buf->len += x;
+    memcpy(buf->data + buf->length, byte, x);
+    buf->length += x;
     return 0;
 }
 
@@ -67,7 +67,7 @@ void *loadNexFile(FILE *fp, MemoryFileLoad *load) {
 
    fread(&load->mainArray, sizeof(load->mainArray), 1, fp);
    ensure_capacity(&load->mainArray, size);
-    load->mainArray.data[load->mainArray.len] = '\0';
+    load->mainArray.data[load->mainArray.length] = '\0';
     free(load->mainArray.data);
 
 }
@@ -77,7 +77,7 @@ char increment(MemoryFileLoad *load, Breakdown *breakdown) {
     char wC;
     breakdown->tracker++;
     ensure_capacity(&load->mainArray, 1);
-    load->mainArray.data[load->mainArray.len] = wC;
+    load->mainArray.data[load->mainArray.length] = wC;
     free(load->mainArray.data);
     return wC;
 }
@@ -215,21 +215,21 @@ void associator(char wC,int *tracker, MemoryFileLoad *load, Breakdown *breakdown
 
 void load_init(MemoryFileLoad *load) {
     load->mainArray.data = malloc(32);
-    if (!load->mainArray.len) {
+    if (!load->mainArray.length) {
         perror("malloc failed");
         exit(EXIT_FAILURE);
     }
-    load->mainArray.len = 0;
-    load->mainArray.cap = 32;
+    load->mainArray.length = 0;
+    load->mainArray.capacity = 32;
 }
 void load_free(MemoryFileLoad *load) {
     free(load->mainArray.data);
 }
 void breakdown_init(Breakdown *brk) {
-    brk->associations.len = 0;
-    brk->associations.cap = 0;
-    brk->memoryKey.len = 0;
-    brk->memoryKey.cap = 0;
+    brk->associations.length = 0;
+    brk->associations.capacity = 0;
+    brk->memoryKey.length = 0;
+    brk->memoryKey.capacity = 0;
     brk->memoryKey.data = malloc(32);
     brk->associations.data = malloc(64);
     brk->workingAssociators.data = malloc(32);
@@ -242,7 +242,6 @@ void breakdown_free(Breakdown *brk) {
     free(brk->memoryKey.data);
     free(brk->associations.data);
     free(brk->workingAssociators.data);
-
 }
 
 void crawler(FILE *fp) {
@@ -327,24 +326,24 @@ void crawler(FILE *fp) {
             wCCheck(wC, "First Check inside alphas"); // Should be second char of memkey
             if (isalpha(wC)) {
                 ensure_capacity(&breakdown.memoryKey, 1);
-                breakdown.memoryKey.data[breakdown.memoryKey.len] = wC;
+                breakdown.memoryKey.data[breakdown.memoryKey.length] = wC;
                 wC = increment(&memoryFileLoad, &breakdown);
-                breakdown.memoryKey.len++;
+                breakdown.memoryKey.length++;
             }
             // The idea here is that the while loop will run until memkeybool
             // gets flipped and THEN if wC == nameToken runs
             while (memoryKeyBool == true) {
                 ensure_capacity(&breakdown.memoryKey, 1);
-                breakdown.memoryKey.data[breakdown.memoryKey.len] = wC;
+                breakdown.memoryKey.data[breakdown.memoryKey.length] = wC;
                 wC = increment(&memoryFileLoad, &breakdown);
-                breakdown.memoryKey.len++;
+                breakdown.memoryKey.length++;
                 wCCheck(wC, "while loop check");
 
                 if (isalnum(wC)) {
                     ensure_capacity(&breakdown.memoryKey, 1);
-                    breakdown.memoryKey.data[breakdown.memoryKey.len] = wC;
+                    breakdown.memoryKey.data[breakdown.memoryKey.length] = wC;
                     wC = increment(&memoryFileLoad, &breakdown);
-                    breakdown.memoryKey.len++;
+                    breakdown.memoryKey.length++;
                 }
                 if (wC == NAMETOKEN) {
                     wCCheck(wC, "NAMETOKEN two check one");
