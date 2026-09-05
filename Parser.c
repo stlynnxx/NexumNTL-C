@@ -35,13 +35,10 @@ const char *valuesSearch(const char *searchTerm) {
 // Loads a row associated with a given wC into compArray
 char look(const char *compArray[], char wC) {
     for (int r  = 0; r < 26; r++) {
-        for (int i = 0; i < 26; i++) {
-            if (toupper(wC) == *valuesMatrix[r][0]) {
-                for (int ii = 0; ii < 14; ii++)
-                    compArray[ii] = valuesMatrix[r][ii];
-                return *compArray[0];
-            }
-
+        if (toupper(wC) == *valuesMatrix[r][0]) {
+            for (int ii = 0; ii < 14; ii++)
+                compArray[ii] = valuesMatrix[r][ii];
+            return *compArray[0];
         }
         return '\0';
     }
