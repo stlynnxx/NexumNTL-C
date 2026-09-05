@@ -15,8 +15,6 @@ void breakdown_free();
 #define ROW 20
 #define COLUMN 20
 
-
-
 typedef struct {
     DynamicBuffers mainArray;
     // We may end up coming back in here and creating a second array to handle nexcode passes

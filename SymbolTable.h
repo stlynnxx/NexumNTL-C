@@ -46,4 +46,4 @@ int row_init(Row *row);
 int row_set(Row *row, size_t col, const char *value);
 
 
-#endif // AST_H
+#endif // SymbolTable_H

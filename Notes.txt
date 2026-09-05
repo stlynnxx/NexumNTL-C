@@ -882,4 +882,12 @@ dynamic buffer structs into there, as well as some others.
 I've also just been sort of jumping around and cleaning up some red lines that popped up as a result of moving stuff
 around.
 
+It seems as if the Parser is going to need the most attention next, so, that's likely where I'll be for the next little
+bit.
+
+I got through rewritng look and I think I'm too tired to continue.
+
+Goodnight.
+
+
 

@@ -18,27 +18,35 @@
 
 
 // This will be for checking if a given search term is within the values matrix
-char valuesSearch (char searchTerm[80]) {
-    int rows = 26;
-    int cols  = sizeof(valuesMatrix[0] / sizeof(valuesMatrix[0][0]);
-    for (int i = 0; i < rows; i++) {
+const char *valuesSearch(const char *searchTerm) {
+    for (int i = 0; i < 26; i++) {
+        int cols = sizeof(valuesMatrix[0]) / sizeof(valuesMatrix[0][0]);
         for (int j = 0; j < cols; j++) {
-            if (valuesMatrix[i][j]) == searchTerm){
-                return valuesMatrix[i][j];}
+            const char *v = valuesMatrix[i][j];
+            if (!v || strcmp(v, "NULL") == 0)
+                continue;
+            if (strcmp(v, searchTerm) == 0)
+                return v;
         }
     }
-
+    return NULL;
 }
-char look(char compArray[], char letter) {
-    int counter = 0;
 
+// Loads a row associated with a given wC into compArray
+char look(const char *compArray[], char wC) {
+    for (int r  = 0; r < 26; r++) {
+        for (int i = 0; i < 26; i++) {
+            if (toupper(wC) == *valuesMatrix[r][0]) {
+                for (int ii = 0; ii < 14; ii++)
+                    compArray[ii] = valuesMatrix[r][ii];
+                return *compArray[0];
+            }
 
-    if (counter <= 26) {
-        compArray[0] = valuesMatrix[letter][counter];
-        counter++;
+        }
+        return '\0';
     }
-    return compArray[0];
 }
+
 char increment(int breakdownIdx, char wC, Breakdown *breakdown, int direction) {
 
     if (direction == 1) {

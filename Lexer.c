@@ -393,61 +393,61 @@ void crawler(FILE *fp) {
                 // printf("wC decimal: %d, NAMETOKEN decimal: %d\n", (int)wC, (int)NAMETOKEN);
                 if (isalpha(wC) == false) {
                     // wCCheck(wC, "Line 295\n");
-                    switch (wC) {
-                        case NAMETOKEN:
-                            printf("NAMETOKEN CASE HIT: %d\n", (int)wC);
-                            printf("Nametoken reached\n");
 
-                            //
-                            printf("Tracker check pre associations: %d\n", breakdown.tracker);
-                            associations(wC, &memoryFileLoad, &breakdown);
-                            printf("Tracker check post associations: %d\n", breakdown.tracker);
-                            wC = increment(&memoryFileLoad, &breakdown);
-                            printf("Tracker Check Line 339: %d\n", breakdown.tracker);
-                            wCCheck(wC, "Final NAMETOKEN check"); // At this point wC is returning an open brace
-                            break;
-                        case ASSOCIATOR:
-                            printf("Associator reached");
-                            associator(wC, &tracker, &memoryFileLoad, &breakdown);
-
-                            break;
-                        case CLOSEBRACE:
-                            printf("310");
-                            wC = increment(&memoryFileLoad, &breakdown);
-                            break;
-                        case 'NULL':
-                            printf("314");
-                            endLinePoint = breakdown.tracker;
-                            whileBool = false;
-                            break;
-                        case COMMA:
-                            printf("Line 319");
-                            wC = increment(&memoryFileLoad, &breakdown);
-                            commaCheck = true;
-                            break;
-                        case SEMICOLON:
-                            wCCheck(wC, "inside semicolon case");
-                            wC = increment(&memoryFileLoad, &breakdown);
-                            whileBool = false;
-                            break;
-                        default:
-                            printf("Crawler Default Error");
-                            whileBool = false;
-                            break;
+                    if (wC == 'NULL') {
+                        printf("314");
+                        endLinePoint = breakdown.tracker;
+                        whileBool = false;
                     }
-
-                } if (isalpha(wC)) {
+                    else {
+                        switch (wC) {
+                            case NAMETOKEN:
+                                printf("NAMETOKEN CASE HIT: %d\n", (int)wC);
+                                printf("Nametoken reached\n");
+                                printf("Tracker check pre associations: %d\n", breakdown.tracker);
+                                associations(wC, &memoryFileLoad, &breakdown);
+                                printf("Tracker check post associations: %d\n", breakdown.tracker);
+                                wC = increment(&memoryFileLoad, &breakdown);
+                                printf("Tracker Check Line 339: %d\n", breakdown.tracker);
+                                wCCheck(wC, "Final NAMETOKEN check"); // At this point wC is returning an open brace
+                                break;
+                            case ASSOCIATOR:
+                                printf("Associator reached");
+                                associator(wC, &tracker, &memoryFileLoad, &breakdown);
+                                break;
+                            case CLOSEBRACE:
+                                printf("310");
+                                wC = increment(&memoryFileLoad, &breakdown);
+                                break;
+                            case COMMA:
+                                printf("Line 319");
+                                wC = increment(&memoryFileLoad, &breakdown);
+                                commaCheck = true;
+                                break;
+                            case SEMICOLON:
+                                wCCheck(wC, "inside semicolon case");
+                                wC = increment(&memoryFileLoad, &breakdown);
+                                whileBool = false;
+                                break;
+                            default:
+                                printf("Crawler Default Error");
+                                whileBool = false;
+                                break;
+                        }
+                    }
+                }
+                if (isalpha(wC)) {
                     printf("isalpha true! :o");
                     printf("isalpha true tracker check: %d", breakdown.tracker);
                     exit(1);
                 }
-
             }
         }
         /* The next line is the end of the nametoken loop*/
      }
 
-
+        // DBs
+    /*
         printf("Fallen off of switch, 0\n");
         printf("Main array: %s\n", memoryFileLoad.mainArray);
         printf("Memkey: %s\n", breakdown.memoryKey);
@@ -455,7 +455,7 @@ void crawler(FILE *fp) {
         printf("Working Associators: %s\n", breakdown.workingAssociators);
         breakdown_free(&breakdown);
         load_free(&memoryFileLoad);
-
+        */
 
     }
 
