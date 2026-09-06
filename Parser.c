@@ -45,31 +45,18 @@ char look(const char *compArray[], char wC) {
 }
 
 char increment(int breakdownIdx, char wC, Breakdown *breakdown, int direction) {
-
-    if (direction == 1) {
-        breakdownIdx++;
-        wC = breakdown->memoryKey[breakdownIdx];
-    }
-    if (direction == 2) {
-        breakdownIdx++;
-        wC = breakdown->associations[breakdownIdx];
-    }
-    if (direction == 3) {
-        breakdownIdx++;
-        wC = breakdown->workingAssociators[breakdownIdx];
-    }
     switch (direction) {
         case 1:
             breakdownIdx++;
-            wC = breakdown->memoryKey[breakdownIdx];
+            wC = breakdown->memoryKey.data[breakdownIdx];
             break;
         case 2:
             breakdownIdx++;
-            wC = breakdown->associations[breakdownIdx];
+            wC = breakdown->associations.data[breakdownIdx];
             break;
         case 3:
             breakdownIdx++;
-            wC = breakdown->workingAssociators[breakdownIdx];
+            wC = breakdown->workingAssociators.data[breakdownIdx];
             break;
         default:
             break;
@@ -77,31 +64,33 @@ char increment(int breakdownIdx, char wC, Breakdown *breakdown, int direction) {
     return wC;
 }
 
-int encode(char *buffer[100], int foundI, int row, int scratchOneIdx, int flag) {
+int encode(char buffer[100], int foundI, int row, int scratchOneIdx, int flag) {
     Export ex;
-    char encodedMorpheme[10];
+    char *encodedMorpheme[10];
     encodedMorpheme[0] = encodedMatrix[row][foundI];
     // Should we have write target write to export at this point?
     // writeTarget[scratchOneIdx] = encodedMorpheme[0];
     switch (flag) {
         case 1:
-            ex.memKey[scratchOneIdx] = encodedMorpheme[0];
+            ex.memKey.data[scratchOneIdx] = *encodedMorpheme[0];
             break;
         case 2:
-            ex.assoc[scratchOneIdx] = encodedMorpheme[0];
+            ex.assoc.data[scratchOneIdx] = *encodedMorpheme[0];
             break;
         case 3:
-            ex.associators[scratchOneIdx] = encodedMorpheme[0];
+            ex.associators.data[scratchOneIdx] = *encodedMorpheme[0];
+        default:
+            break;
     }
 
 }
 
-int verify(char *buffer[100], int rowSiZe, int row, int scratchOneIdx, int flag) {
+int verify(char buffer[100], int rowSiZe, int row, int scratchOneIdx, int flag) {
     int encodeVal;
     int foundI;
     for (int i = 0; i <= rowSiZe; i++) {
         if (valuesMatrix[row][i] == NULL) break;
-        if (strncmp(*buffer, valuesMatrix[row][i], strlen(*buffer)) == 0) {
+        if (strncmp(buffer, valuesMatrix[row][i], strlen(buffer)) == 0) {
             // match is found here
             foundI = i;
             encodeVal = encode(buffer, foundI, row, scratchOneIdx, flag);
@@ -114,12 +103,13 @@ int verify(char *buffer[100], int rowSiZe, int row, int scratchOneIdx, int flag)
             perror("Morpheme Encoding Error");
         }
     }
+}
 
 
 
-void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag) {
-    char select = *buffer[0];
-    char compSelect =  *compBuffer[0];
+void match(char buffer[100], char compBuffer[100], int scratchOneIdx, int flag) {
+    char select = buffer[0];
+    char compSelect =  compBuffer[0];
     char workSelect = toupper(select);
     size_t rowSize;
     int verifyReturn;
@@ -398,7 +388,7 @@ void match(char *buffer[100], char *compBuffer[100], int scratchOneIdx, int flag
 int newCheck(int breakdownIdx, int scratchOneIdx, int writeFlag, builder *builderr, Breakdown *breakdown, char wC) {
     int encodedScratch;
     int peekIdx = breakdownIdx + 1;
-    char wCPeek = breakdown->associations[peekIdx];
+    char wCPeek = breakdown->associations.data[peekIdx];
     char compArray[800]; // This is a placeholder size that needs changed, this is for loading portions of the matrix
     char compBuffer[100];
     char buffer[100];
@@ -412,7 +402,7 @@ int newCheck(int breakdownIdx, int scratchOneIdx, int writeFlag, builder *builde
     compSize = sizeof(compArray) / sizeof(compArray[0]); // This gives us the number of entries within compArray
 
     if (isupper(wC)) {
-        builderr->assocScratch[scratchOneIdx] = wC;
+        builderr->assocScratch.data[scratchOneIdx] = wC;
         scratchOneIdx++;
         for (int i = 0; i < compSize; i++) {
             if (wC == compArray[i]) {
@@ -443,7 +433,7 @@ int newCheck(int breakdownIdx, int scratchOneIdx, int writeFlag, builder *builde
                 }
                 if (sizeX == sizeY) {
                     // Morpheme match
-                    match(buffer[100], compBuffer[100], scratchOneIdx, writeFlag);
+                    match(buffer, compBuffer, scratchOneIdx, writeFlag);
 
                 }
 
@@ -478,27 +468,23 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
     int breakdownIdx = 0;
     int scratchOneIdx = 0;
     int workIdx = breakdownIdx + 1;
-    assocSize = sizeof(breakdown->associations) / sizeof(breakdown->associations[0]);
-    memKeySize = sizeof(breakdown->memoryKey)/ sizeof(breakdown->memoryKey[0]);
-    associatorsSize = sizeof(breakdown->workingAssociators)/ sizeof(breakdown->workingAssociators[0]);
+    assocSize = sizeof(breakdown->associations) / sizeof(breakdown->associations.data[0]);
+    memKeySize = sizeof(breakdown->memoryKey)/ sizeof(breakdown->memoryKey.data[0]);
+    associatorsSize = sizeof(breakdown->workingAssociators)/ sizeof(breakdown->workingAssociators.data[0]);
     char wC; // Similar to wC in Lexer, is the current working character
     bool run = true;
     // wC = breakdown->associations[breakdownIdx]; // This sets the current working character
     char *writeTarget; // the array being written to within checker
 
     for (int j = 0; j < memKeySize; j++) { // This loops through the memKeys
-        wC = breakdown->memoryKey[breakdownIdx]; // Setting wC for this logic block
-
-
+        wC = breakdown->memoryKey.data[breakdownIdx]; // Setting wC for this logic block
         wC = increment(breakdownIdx, wC, breakdown, 1);
-
         if (wC == NAMETOKEN) {
             if (firstNameTokenCheck == false) {
                 firstNameTokenCheck = true;
             }
-
             if (firstNameTokenCheck == true && secondNameTokenCheck == true) {
-                builderr->memKeyScratch[workIdx] = COMMA; // This will act as a delimiter for associations within the array within the struct, needs an index
+                builderr->memKeyScratch.data[workIdx] = COMMA; // This will act as a delimiter for associations within the array within the struct, needs an index
                 if (secondNameTokenCheck == true) {
                     firstNameTokenCheck = false;
                     secondNameTokenCheck = false;
@@ -509,12 +495,12 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
             perror("Parser nametoken error");
         }
         wC = increment(breakdownIdx, wC, breakdown, 1);
-        writeTarget = builderr->memKeyScratch; // Assigns write target
+        writeTarget = builderr->memKeyScratch.data; // Assigns write target
         // The next line is what will be replaced with newCheck
         /// breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
         breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 1, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
         
-        export_->memKey[breakdownIdx] = writeTarget[breakdownIdx]; // We need to replace breakdownIdx
+        export_->memKey.data[breakdownIdx] = writeTarget[breakdownIdx]; // We need to replace breakdownIdx
 
         wC = increment(breakdownIdx, wC, breakdown, 1);
         if (wC == NAMETOKEN) {
@@ -528,14 +514,14 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
     breakdownIdx = 0;
     for (int i = 0; i < assocSize; i++) { // this loops through associations
         writeFlag++;
-        wC = breakdown->associations[breakdownIdx]; // Setting wC for this logic block
+        wC = breakdown->associations.data[breakdownIdx]; // Setting wC for this logic block
 
         if (wC == NAMETOKEN) {
             if (firstNameTokenCheck == false) {
                 firstNameTokenCheck = true;
             }
             if (firstNameTokenCheck == true && secondNameTokenCheck == true) {
-                builderr->assocScratch[workIdx] = COMMA; // This will act as a delimiter for associations within the array within the struct, needs an index
+                builderr->assocScratch.data[workIdx] = COMMA; // This will act as a delimiter for associations within the array within the struct, needs an index
                 secondNameTokenCheck = true;
                 if (secondNameTokenCheck == true) {
                     firstNameTokenCheck = false;
@@ -547,10 +533,10 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
             perror("Parser nametoken error");
         }
         wC = increment(breakdownIdx, wC, breakdown, 2);
-        writeTarget = builderr->assocScratch; // Assigns write target
+        writeTarget = builderr->assocScratch.data; // Assigns write target
         // breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
         breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 2, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
-        export_->assoc[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace BreakdownIDX
+        export_->assoc.data[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace BreakdownIDX
 
         /* This was originally updating wC from memoryKey before increment; i've implemented increment with 2 for association because
          I think that the memoryKey was a mistake */
@@ -566,14 +552,14 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
     breakdownIdx = 0;
     for (int k = 0; k < associatorsSize; k++) { // this loops through associators
         writeFlag++;
-        wC = breakdown->workingAssociators[breakdownIdx]; // Setting wC for this logic block
+        wC = breakdown->workingAssociators.data[breakdownIdx]; // Setting wC for this logic block
 
         if (wC == NAMETOKEN) {
             if (firstNameTokenCheck == false) {
                 firstNameTokenCheck = true;
             }
             if (firstNameTokenCheck == true && secondNameTokenCheck == true) {
-                builderr->associatorScratch[workIdx] = COMMA; // This will act as a delimiter for associations within the array within the struct, needs an index
+                builderr->associatorScratch.data[workIdx] = COMMA; // This will act as a delimiter for associations within the array within the struct, needs an index
                 secondNameTokenCheck = true;
                 if (secondNameTokenCheck == true) {
                     firstNameTokenCheck = false;
@@ -585,10 +571,10 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
             perror("Parser nametoken error");
         }
         wC = increment(breakdownIdx, wC, breakdown, 3);
-        writeTarget = builderr->associatorScratch; // Assigns write target
+        writeTarget = builderr->associatorScratch.data; // Assigns write target
         // breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
         breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 3, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
-        export_->associators[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace breakdownIdx
+        export_->associators.data[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace breakdownIdx
         wC = increment(breakdownIdx, wC, breakdown, 3);
         if (wC == NAMETOKEN) {
             secondNameTokenCheck = true;
@@ -598,94 +584,99 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
             k = associatorsSize + 1;
         }
     } // End associators loop
+}
 
 
 
 
     // I don't remember why I wrote this so it's commented out hoping it'll become obvious that I do or don't need it
 
-                                    /*
-                                    for (int b = 0; b < assocSize; b++) {
-                                        // These if statements get the char counts for the associations
-                                        if (isalpha(working->assoc[b])) {
-                                            assocCharCount++;
-                                        }
-                                        if (isalnum(working->assoc[b])) {
-                                            assocCharCount++;
-                                        }
-                                        if (breakdown->associations[b] == COMMA) {
-                                            commaPoint = breakdown->associations[b];
-                                            counts[countsIdx] = assocCharCount;
-                                            countsIdx++;
-                                            assocCharCount = 0;
-                                        }
-                                        // The k for loop is isolating assocations
-                                        for (int k = 0; k <= commaPoint - 1; k++) {
-                                            breakdown->associations[k] = breakdown->associations[b];
+    /*
+    for (int b = 0; b < assocSize; b++) {
+        // These if statements get the char counts for the associations
+        if (isalpha(working->assoc[b])) {
+            assocCharCount++;
+        }
+        if (isalnum(working->assoc[b])) {
+            assocCharCount++;
+        }
+        if (breakdown->associations[b] == COMMA) {
+            commaPoint = breakdown->associations[b];
+            counts[countsIdx] = assocCharCount;
+            countsIdx++;
+            assocCharCount = 0;
+        }
+        // The k for loop is isolating assocations
+        for (int k = 0; k <= commaPoint - 1; k++) {
+            breakdown->associations[k] = breakdown->associations[b];
 
-                                        } // End of k for
-                                        */
+        } // End of k for
+        */
 
-                                    // Here we will need to reference the symbol table for encodings and translate to .nexcode
+    // Here we will need to reference the symbol table for encodings and translate to .nexcode
 
-                                    // For checking for macro'd morphemes (mm's) we should have a list of all of the first letters of
-                                    // the mm's and if there's a match advance one letter at a time checking for mm matches
-
-
-
-                                    // This is checking to see if the current char being examined is a capital letter,
-                                    // and append it to the scratch if so
+    // For checking for macro'd morphemes (mm's) we should have a list of all of the first letters of
+    // the mm's and if there's a match advance one letter at a time checking for mm matches
 
 
 
+    // This is checking to see if the current char being examined is a capital letter,
+    // and append it to the scratch if so
 
-//}
 
-void flag()
+
+
+    //}
+
+    void flag()
     {
-    nexcodeFlag = true;
-}
-void exp_init(Export *export_) {
-    export_->assoc.length = 0;
-    export_->assoc.capacity = 0;
-    export_->memKey.length = 0;
-    export_->memKey.capacity = 0;
-    export_->memKey.data = malloc(32);
-    export_->assoc.data = malloc(64);
-    export_->associators.data = malloc(32);
-    if (!export_->memKey.data || !export_->assoc.data || !export_->associators.data) {
-        perror("exp_init malloc failed");
-        exit(EXIT_FAILURE);
+        nexcodeFlag = true;
     }
-}
-void exp_add(Export *export_, int value) {
+    void exp_init(Export *export_) {
+        export_->assoc.length = 0;
+        export_->assoc.capacity = 0;
+        export_->memKey.length = 0;
+        export_->memKey.capacity = 0;
+        export_->memKey.data = malloc(32);
+        export_->assoc.data = malloc(64);
+        export_->associators.data = malloc(32);
+        if (!export_->memKey.data || !export_->assoc.data || !export_->associators.data) {
+            perror("exp_init malloc failed");
+            exit(EXIT_FAILURE);
+        }
+    }
+    void exp_add(Export *export_, int value) {
 
 
     }
-void build_init(builder *builderr_) {
-    builderr->associatorScratch.length = 0;
-    builderr->associatorScratch.capacity = 0;
-    builderr->memKeyScratch.length = 0;
-    builderr->memKeyScratch.capacity = 0;
-    builderr->memKeyScratch.data = malloc(32);
-    builderr->assocScratch.data = malloc(64);
-    builderr->associatorScratch.data = malloc(32);
-    if (!builderr->memKeyScratch.data || !builderr->assocScratch.data || !builderr->associatorScratch.data) {
-        perror("build_init malloc failed");
-        exit(EXIT_FAILURE);
+    void build_init(builder *builderr)
+    {
+        builderr->associatorScratch.length = 0;
+        builderr->associatorScratch.capacity = 0;
+        builderr->memKeyScratch.length = 0;
+        builderr->memKeyScratch.capacity = 0;
+        builderr->memKeyScratch.data = malloc(32);
+        builderr->assocScratch.data = malloc(64);
+        builderr->associatorScratch.data = malloc(32);
+        if (!builderr->memKeyScratch.data || !builderr->assocScratch.data || !builderr->associatorScratch.data)
+        {
+            perror("build_init malloc failed");
+            exit(EXIT_FAILURE);
+        }
     }
-}
 
-int prun() {
-    // This establishes the struct instances and
-    // passes them into parseAssocs
-    Breakdown breakdown;
-    breakdown_init(&breakdown);
-    Export export_;
-    exp_init(&export_);
-    builder builderr;
-    build_init(&builderr);
-    parse(&breakdown, &export_, &builderr);
-    return 0;
-}
+    int prun()
+    {
+        // This establishes the struct instances and
+        // passes them into parseAssocs
+        Breakdown breakdown;
+        breakdown_init(&breakdown);
+        Export export_;
+        exp_init(&export_);
+        builder builderr;
+        build_init(&builderr);
+        parse(&breakdown, &export_, &builderr);
+        return 0;
+    }
+
 
