@@ -66,18 +66,19 @@ void openNexFile(FILE *fp, InputForm *form) {
     }
     format(fp, form);
 }
-void readBytes(FILE *fp, InputForm *form, Export *exp) {
+
+int readBytes(FILE *fp, InputForm *form, Export *exp) {
     // The following variables are establishing the sizes for the arrays within the struct
     int sizeAssoc = sizeof(exp->assoc) / sizeof(exp->assoc.data[0]);
     int sizeAssociators = sizeof(exp->associators) / sizeof(exp->associators.data[0]);
     int sizeMemKeys = sizeof(exp->memKey) / sizeof(exp->memKey.data[0]);
     // Control Vars
-    bool memNameFlag = false;
+    bool mem = false;
     // Here we are looping through the arrays individually
     for (int i = 0; i < sizeAssoc; i++) {
         if (i == 0) {
             exp->memKey.data[i] = NAMETOKEN;
-            memNameFlag = true;
+            mem = true;
         }
         if (i > 0) {
             if (form->memoryKey[i] )
@@ -90,7 +91,14 @@ void readBytes(FILE *fp, InputForm *form, Export *exp) {
     for (int i = 0; i < sizeMemKeys; i++) {
         form->memoryKey[i] = exp->memKey.data[i];
     }
+    if (mem == true) {
+        return 1;
+    }
+    if (mem == false) {
+        return 0;
+    }
 }
+
 // Begins the append process
 int append(const char *path) {
     Export *exp;

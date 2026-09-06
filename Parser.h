@@ -11,6 +11,12 @@ int prun();
 
 
 typedef struct {
+    DynamicBuffers compArray;
+    DynamicBuffers compBuffer;
+    DynamicBuffers Buffers;
+} ParserBuffers;
+
+typedef struct {
     DynamicBuffers assoc;
     DynamicBuffers associators;
     DynamicBuffers memKey;
@@ -20,6 +26,6 @@ typedef struct {
     DynamicBuffers assocScratch;
     DynamicBuffers associatorScratch;
     DynamicBuffers memKeyScratch;
-} builder;
+} Builder;
 
 #endif //NEXUMNTL_PARSER_H

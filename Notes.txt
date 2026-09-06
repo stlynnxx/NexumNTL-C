@@ -897,4 +897,10 @@ I should've programmed earlier in the day but I just needed a lazy day and it wa
 I'll be back tomorrow.
 
 
+9/6/2026-
 
+I've been debugging so far today, trying to run the program and then just working through each issue stopping it from
+compiling one by one. I've made some pretty good progress going through lexer and polishing things up a bit and
+npw i'm in parser, about to working my way through newCheck and match and get those functions sorted out!
+
+I've been at a bit so we may see a break soon but i'll probably work a bit more first still.

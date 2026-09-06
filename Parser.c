@@ -106,7 +106,7 @@ int verify(char buffer[100], int rowSiZe, int row, int scratchOneIdx, int flag) 
 }
 
 
-
+//
 void match(char buffer[100], char compBuffer[100], int scratchOneIdx, int flag) {
     char select = buffer[0];
     char compSelect =  compBuffer[0];
@@ -121,11 +121,10 @@ void match(char buffer[100], char compBuffer[100], int scratchOneIdx, int flag) 
                 rowSize = sizeof(valuesMatrix[A])/sizeof(valuesMatrix[A][0]);
                 verifyReturn = verify(buffer, rowSize, A, scratchOneIdx, flag);
                 if (verifyReturn == 0) {
-                    verifyBool = false;
+                    perror("Verify Error");
                 }
                 else if (verifyReturn == 1) {
                     verifyBool = true;
-
                 }
                 break;
             case 'B':
@@ -385,7 +384,7 @@ void match(char buffer[100], char compBuffer[100], int scratchOneIdx, int flag) 
     }
 
 
-int newCheck(int breakdownIdx, int scratchOneIdx, int writeFlag, builder *builderr, Breakdown *breakdown, char wC) {
+int newCheck(int breakdownIdx, int scratchOneIdx, int writeFlag, Builder *builderr, Breakdown *breakdown, ParserBuffers *pbuffers,char wC) {
     int encodedScratch;
     int peekIdx = breakdownIdx + 1;
     char wCPeek = breakdown->associations.data[peekIdx];
@@ -453,18 +452,14 @@ void sendToSource() {
 }
 
 
-void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
+void parse(Breakdown *breakdown, Export *export_, Builder *builderr, ParserBuffers *pbuffers) {
     int writeFlag = 1;
     size_t assocSize; // size of the assoc array in the working struct
     size_t memKeySize; // size of mem key array in breakdown
     size_t associatorsSize;
     bool firstNameTokenCheck = false;
     bool secondNameTokenCheck = false;
-    bool closeBraceCheck = false;
-    int assocCharCount = 0; // a working count of the current association being parsed
-    int counts[2000]; // An array that stores the values that represent the amount of chars in each associaton
-    int countsIdx = 0; // The index for appending to the above array
-    int commaPoint;
+    // bool closeBraceCheck = false;
     int breakdownIdx = 0;
     int scratchOneIdx = 0;
     int workIdx = breakdownIdx + 1;
@@ -472,7 +467,6 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
     memKeySize = sizeof(breakdown->memoryKey)/ sizeof(breakdown->memoryKey.data[0]);
     associatorsSize = sizeof(breakdown->workingAssociators)/ sizeof(breakdown->workingAssociators.data[0]);
     char wC; // Similar to wC in Lexer, is the current working character
-    bool run = true;
     // wC = breakdown->associations[breakdownIdx]; // This sets the current working character
     char *writeTarget; // the array being written to within checker
 
@@ -498,7 +492,7 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
         writeTarget = builderr->memKeyScratch.data; // Assigns write target
         // The next line is what will be replaced with newCheck
         /// breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
-        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 1, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 1, builderr, breakdown, pbuffers, wC); // wC should be at the end of whatever word was last parsed here
         
         export_->memKey.data[breakdownIdx] = writeTarget[breakdownIdx]; // We need to replace breakdownIdx
 
@@ -507,7 +501,7 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
             secondNameTokenCheck = true;
         }
         if (wC == CLOSEBRACE) {
-            closeBraceCheck = true;
+            // closeBraceCheck = true;
             j = memKeySize + 1;
         }
     } // End memkey loop
@@ -535,7 +529,7 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
         wC = increment(breakdownIdx, wC, breakdown, 2);
         writeTarget = builderr->assocScratch.data; // Assigns write target
         // breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
-        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 2, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 2, builderr, breakdown, pbuffers,wC); // wC should be at the end of whatever word was last parsed here
         export_->assoc.data[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace BreakdownIDX
 
         /* This was originally updating wC from memoryKey before increment; i've implemented increment with 2 for association because
@@ -545,7 +539,7 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
             secondNameTokenCheck = true;
         }
         if (wC == CLOSEBRACE) {
-            closeBraceCheck = true;
+            // closeBraceCheck = true;
             i = assocSize + 1;
         }
     } // End associations loop
@@ -573,14 +567,14 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
         wC = increment(breakdownIdx, wC, breakdown, 3);
         writeTarget = builderr->associatorScratch.data; // Assigns write target
         // breakdownIdx = checker(breakdownIdx, scratchOneIdx, writeTarget, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
-        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 3, builderr, breakdown, wC); // wC should be at the end of whatever word was last parsed here
+        breakdownIdx = newCheck(breakdownIdx, scratchOneIdx, 3, builderr, breakdown, pbuffers, wC); // wC should be at the end of whatever word was last parsed here
         export_->associators.data[breakdownIdx] = writeTarget[breakdownIdx]; // Probably should replace breakdownIdx
         wC = increment(breakdownIdx, wC, breakdown, 3);
         if (wC == NAMETOKEN) {
             secondNameTokenCheck = true;
         }
         if (wC == CLOSEBRACE) {
-            closeBraceCheck = true;
+            // closeBraceCheck = true;
             k = associatorsSize + 1;
         }
     } // End associators loop
@@ -628,55 +622,70 @@ void parse(Breakdown *breakdown, Export *export_, builder *builderr) {
 
     //}
 
-    void flag()
+void flag()
+{
+    nexcodeFlag = true;
+}
+void exp_init(Export *export_) {
+    export_->assoc.length = 0;
+    export_->assoc.capacity = 0;
+    export_->memKey.length = 0;
+    export_->memKey.capacity = 0;
+    export_->memKey.data = malloc(32);
+    export_->assoc.data = malloc(64);
+    export_->associators.data = malloc(32);
+    if (!export_->memKey.data || !export_->assoc.data || !export_->associators.data) {
+        perror("exp_init malloc failed");
+        exit(EXIT_FAILURE);
+    }
+}
+void exp_add(Export *export_, int value) {
+}
+void build_init(Builder *builderr)
+{
+    builderr->associatorScratch.length = 0;
+    builderr->associatorScratch.capacity = 0;
+    builderr->memKeyScratch.length = 0;
+    builderr->memKeyScratch.capacity = 0;
+    builderr->memKeyScratch.data = malloc(32);
+    builderr->assocScratch.data = malloc(64);
+    builderr->associatorScratch.data = malloc(32);
+    if (!builderr->memKeyScratch.data || !builderr->assocScratch.data || !builderr->associatorScratch.data)
     {
-        nexcodeFlag = true;
+        perror("build_init malloc failed");
+        exit(EXIT_FAILURE);
     }
-    void exp_init(Export *export_) {
-        export_->assoc.length = 0;
-        export_->assoc.capacity = 0;
-        export_->memKey.length = 0;
-        export_->memKey.capacity = 0;
-        export_->memKey.data = malloc(32);
-        export_->assoc.data = malloc(64);
-        export_->associators.data = malloc(32);
-        if (!export_->memKey.data || !export_->assoc.data || !export_->associators.data) {
-            perror("exp_init malloc failed");
-            exit(EXIT_FAILURE);
-        }
-    }
-    void exp_add(Export *export_, int value) {
-
-
-    }
-    void build_init(builder *builderr)
-    {
-        builderr->associatorScratch.length = 0;
-        builderr->associatorScratch.capacity = 0;
-        builderr->memKeyScratch.length = 0;
-        builderr->memKeyScratch.capacity = 0;
-        builderr->memKeyScratch.data = malloc(32);
-        builderr->assocScratch.data = malloc(64);
-        builderr->associatorScratch.data = malloc(32);
-        if (!builderr->memKeyScratch.data || !builderr->assocScratch.data || !builderr->associatorScratch.data)
-        {
-            perror("build_init malloc failed");
-            exit(EXIT_FAILURE);
-        }
+}
+void pbuffers_init(ParserBuffers *pbuffers) {
+    pbuffers->compBuffer.length = 0;
+    pbuffers->compBuffer.capacity = 0;
+    pbuffers->compArray.length = 0;
+    pbuffers->compArray.capacity = 0;
+    pbuffers->Buffers.length = 0;
+    pbuffers->Buffers.capacity = 0;
+    pbuffers->Buffers.data = malloc(32);
+    pbuffers->compArray.data = malloc(32);
+    pbuffers->compBuffer.data = malloc(32);
+    if (!pbuffers->Buffers.data || !pbuffers->compArray.data || !pbuffers->compBuffer.data) {
+        perror("pbuffers_init malloc failed");
+        exit(EXIT_FAILURE);
     }
 
-    int prun()
-    {
-        // This establishes the struct instances and
-        // passes them into parseAssocs
-        Breakdown breakdown;
-        breakdown_init(&breakdown);
-        Export export_;
-        exp_init(&export_);
-        builder builderr;
-        build_init(&builderr);
-        parse(&breakdown, &export_, &builderr);
-        return 0;
-    }
+}
+int prun()
+{
+    // This establishes the struct instances and
+    // passes them into parseAssocs
+    Breakdown breakdown;
+    breakdown_init(&breakdown);
+    Export export_;
+    exp_init(&export_);
+    Builder builderr;
+    build_init(&builderr);
+    ParserBuffers pbuffers;
+    pbuffers_init(&pbuffers);
+    parse(&breakdown, &export_, &builderr, &pbuffers);
+    return 0;
+}
 
 
